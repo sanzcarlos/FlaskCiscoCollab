@@ -1,0 +1,10 @@
+{% extends 'template.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<form class="form-inline">
+  <div class="form-group mr-2">
+    <label class="sr-only" for="inputEmail">Device Type</label>
+    <input type="text" class="form-control" id="inputEmail" placeholder="MAC Address">
+  </div>
+</form>
+{% endblock %}
