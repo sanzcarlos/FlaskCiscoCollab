@@ -78,8 +78,32 @@ class CiscoAXL_File(Resource):
             infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
+            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'})
             sys.exit()
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
+
+            # * Leemos la primera linea y sólo cogemos los dos primeros caracteres
+            varHeader = str(next(varCSVFile).split())[2:4]
+            infoLogger.debug('Line 0: %s' % (varHeader))
+
+            if varHeader == 'PH':
+                # * Damos de alta los telefonos
+                varFieldNames = (
+                    "FirstName", "Surname", "userPrincipalName", "DirectoryNumber", "Type", "IPPhone", "MACAddress",
+                    "IncomingDID", "OutgoingDID", "CSS", "VoiceMail", "CallPickupGroup", "WebUser", "Locale", "ForwardCSS",
+                    "CallWaiting", "SRST")
+                varFileReader = csv.DictReader(varCSVFile, varFieldNames)
+            elif varHeader == 'TP':
+                # * Damos de alta los Translation Pattern
+                infoLogger.debug('IF - %s' % ('TP'))
+            else:
+                # * Valor no correcto 
+                return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
+
+        finally:
+            # * Cerramos el fichero
+            varCSVFile.close()
+            infoLogger.info('Se ha cerrado el archivo %s' % (varFilename))
 
         return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
