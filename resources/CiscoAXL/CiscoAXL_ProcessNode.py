@@ -43,15 +43,15 @@ class CiscoAXL_ProcessNode(Resource):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo GET' )
-        varJSON = request.get_json()
-        infoLogger.debug('El cliente es: %s' % (varJSON['Customer']))
-        infoLogger.debug('La direccion IP es: %s' % (varJSON['mmpHost']))
-        infoLogger.debug('Esta buscando el ProcessNode: %s' % (varJSON['varName']))
-        CustomService = CustomSoap.ClientSoap (infoLogger,varJSON['mmpHost'],varJSON['mmpUser'],varJSON['mmpPass'],varJSON['mmpVersion'])
+        varFORM = request.form
+        infoLogger.debug('Los datos del formulario son: %s' % (varFORM))
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+        infoLogger.debug('Esta buscando el ProcessNode: %s' % (varFORM['varProcessNodeName']))
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
         CustomSoap_Data = {
-            'name': varJSON['varName']
+            'name': varFORM['varProcessNodeName']
         }
 
         try:
@@ -77,7 +77,6 @@ class CiscoAXL_ProcessNode(Resource):
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo PATCH' )
         varJSON = request.get_json()
-        infoLogger.debug('El cliente es: %s' % (varJSON['Customer']))
         infoLogger.debug('La direccion IP es: %s' % (varJSON['mmpHost']))
         infoLogger.debug('Esta buscando los ProcessNode con el siguiente criterio: %s' % (varJSON['varsearchCriteria']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varJSON['mmpHost'],varJSON['mmpUser'],varJSON['mmpPass'],varJSON['mmpVersion'])

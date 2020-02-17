@@ -1,10 +1,15 @@
 {% extends 'template.html' %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<form class="form-inline">
-  <div class="form-group mr-2">
-    <label class="sr-only" for="inputEmail">Device Type</label>
-    <input type="text" class="form-control" id="inputEmail" placeholder="MAC Address">
-  </div>
-</form>
+<div class="container" style="text-align:center">
+  <form method="post" class="form-horizontal">
+    <div class="form-group col-xs-2">
+    </div>
+    <div class="form-group col-xs-6">
+      <label class="sr-only" for="inputEmail">Device Type</label>
+      <input type="text" class="form-control" id="inputEmail" placeholder="MAC Address">
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+</div>
 {% endblock %}
