@@ -5,7 +5,7 @@
 # *
 # * Cisco AXL Python
 # *
-# * Copyright (C) 2015 Carlos Sanz <carlos.sanzpenas@gmail.com>
+# * Copyright (C) 2020 Carlos Sanz <carlos.sanzpenas@gmail.com>
 # *
 # *  This program is free software; you can redistribute it and/or
 # * modify it under the terms of the GNU General Public License
@@ -23,6 +23,13 @@
 # *------------------------------------------------------------------
 # *
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Description
+# *
+# *  PATCH  - list   - to search resource
+# *
+# *------------------------------------------------------------------
+
 # Import Modules
 from flask import jsonify
 from flask_restful import Resource
@@ -38,29 +45,18 @@ import zeep
 import logging
 
 class CiscoAXL_Change(Resource):
-    def get(self):
-        infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_Change' )
-        return jsonify({'Class': 'Change','AXL': 'Get','Method': 'GET', 'Status': 'Ok'})
-
-    def post(self):
-        infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Change' )
-        return jsonify({'Class': 'Change','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
-
     def patch(self):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Change' )
+        infoLogger.debug('Esta utilizando el metodo PATCH' )
+        varFORM = request.form
+        infoLogger.debug('Los datos del formulario son: %s' % (varFORM))
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
 
-        CustomService = CustomSoap.ClientSoap (infoLogger,varJSON['mmpHost'],varJSON['mmpUser'],varJSON['mmpPass'],varJSON['mmpVersion'])
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
-        CustomSoap_Data = {
-            'objectList': 'User'
-        }
-
         try:
-            #CustomUser_Resp = CustomService.listChange(**CustomSoap_Data)
             CustomUser_Resp = CustomService.listChange()
         except:
             infoLogger.error('Se ha producido un error en la consulta SOAP')
@@ -73,18 +69,5 @@ class CiscoAXL_Change(Resource):
             }
             return jsonify(CustomSoap_Data)
         else:
-            #infoLogger.info('Se ha encontrado el Translation Pattern %s en la Particion %s' % (varJSON['varPattern'],varJSON['varroutePartitionName']))
-            return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
-
-
-        return jsonify({'Class': 'Change','AXL': 'List','Method': 'PATCH', 'Status': 'Ok'})
-
-    def put(self):
-        infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_Change' )
-        return jsonify({'Class': 'Change','AXL': 'Update','Method': 'PUT', 'Status': 'Ok'})
-
-    def delete(self):
-        infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_Change' )
-        return jsonify({'Class': 'Change','AXL': 'Remove','Method': 'DELETE', 'Status': 'Ok'})
+            #infoLogger.debug('Los datos devueltos son: %s' % (CustomUser_Resp))
+            return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp)))

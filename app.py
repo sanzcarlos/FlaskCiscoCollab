@@ -33,5 +33,16 @@ def index():
     infoLogger.info('Estoy en la pagina por defecto')
     return render_template("form.html")
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Description
+# *
+# *  GET    - get    - to retrieve resource representation/information only
+# *  POST   - add    - to create new subordinate resources
+# *  PUT    - update - to update existing resource
+# *  DELETE - remove - to delete resources 
+# *  PATCH  - list   - to search resource
+# *
+# *------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8443, debug=True, ssl_context=context)
