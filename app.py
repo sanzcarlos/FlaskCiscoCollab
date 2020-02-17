@@ -28,6 +28,8 @@ api.add_resource(CiscoAXL_Template.CiscoAXL_Template, '/api/v1/CUCM/Template')
 api.add_resource(CiscoAXL_TransPattern.CiscoAXL_TransPattern, '/api/v1/CUCM/TransPattern')
 api.add_resource(CiscoAXL_User.CiscoAXL_User, '/api/v1/CUCM/User')
 
+api.add_resource(CiscoAXL_File.CiscoAXL_File, '/api/v1/CUCM/File')
+
 @app.route("/", methods=['GET', 'POST', 'PUT'])
 def index():
     infoLogger.info('Estoy en la pagina por defecto')

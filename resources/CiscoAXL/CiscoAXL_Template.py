@@ -23,6 +23,17 @@
 # *------------------------------------------------------------------
 # *
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Description
+# *
+# *  GET    - get    - to retrieve resource representation/information only
+# *  POST   - add    - to create new subordinate resources
+# *  PUT    - update - to update existing resource
+# *  DELETE - remove - to delete resources 
+# *  PATCH  - list   - to search resource
+# *
+# *------------------------------------------------------------------
+
 # Import Modules
 from flask import jsonify
 from flask_restful import Resource
