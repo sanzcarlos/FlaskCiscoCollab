@@ -30,9 +30,9 @@ api.add_resource(CiscoAXL_User.CiscoAXL_User, '/api/v1/CUCM/User')
 
 api.add_resource(CiscoAXL_File.CiscoAXL_File, '/api/v1/CUCM/File')
 
-@app.route("/", methods=['GET', 'POST', 'PUT'])
+@app.route("/", methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
 # *------------------------------------------------------------------
 # * Rest API - Cisco AXL - Description
