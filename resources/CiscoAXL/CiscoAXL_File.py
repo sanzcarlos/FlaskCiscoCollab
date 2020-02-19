@@ -35,6 +35,7 @@ import os
 import csv
 import sys
 import json
+import requests
 import zeep
 import logging
 
@@ -82,21 +83,29 @@ class CiscoAXL_File(Resource):
             sys.exit()
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
-
-            # * Leemos la primera linea y sólo cogemos los dos primeros caracteres
-            varHeader = str(next(varCSVFile).split())[2:4]
-            infoLogger.debug('Line 0: %s' % (varHeader))
-
-            if varHeader == 'PH':
+            if varFORM['action']  == 'phone':
                 # * Damos de alta los telefonos
                 varFieldNames = (
                     "FirstName", "Surname", "userPrincipalName", "DirectoryNumber", "Type", "IPPhone", "MACAddress",
                     "IncomingDID", "OutgoingDID", "CSS", "VoiceMail", "CallPickupGroup", "WebUser", "Locale", "ForwardCSS",
                     "CallWaiting", "SRST")
                 varFileReader = csv.DictReader(varCSVFile, varFieldNames)
-            elif varHeader == 'TP':
+            if varFORM['action']  == 'TransPattern':
                 # * Damos de alta los Translation Pattern
-                infoLogger.debug('IF - %s' % ('TP'))
+                varFileReader = csv.DictReader(varCSVFile)
+                # Variables comunes a todas las peticiones:
+                url = 'https://127.0.0.1:8443/api/v1/CUCM/TransPattern'
+                payloadHeader = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
+                headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+                # Comenzamos el Bucle para dar de alta los Translation Pattern
+                for row in varFileReader:
+                    infoLogger.debug('Row: %s' % (row))
+                    payload = payloadHeader + '&pattern=' + row['pattern'] + '&routePartitionName=' + row['routePartitionName'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName'] + '&calledPartyTransformationMask=' + row['calledPartyTransformationMask']
+                    infoLogger.debug('payload: %s' % (payload))
+                    response = requests.request('POST', url, verify=False, headers=headers, data = payload)
+                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                    #return (json.loads(response.text.encode('utf8')))
             else:
                 # * Valor no correcto 
                 return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
