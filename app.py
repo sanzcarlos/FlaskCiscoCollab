@@ -32,8 +32,7 @@ api.add_resource(CiscoAXL_File.CiscoAXL_File, '/api/v1/CUCM/File')
 
 @app.route("/", methods=['GET', 'POST', 'PUT'])
 def index():
-    infoLogger.info('Estoy en la pagina por defecto')
-    return render_template("form.html")
+    return render_template("index.html")
 
 # *------------------------------------------------------------------
 # * Rest API - Cisco AXL - Description
