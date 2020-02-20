@@ -6,6 +6,7 @@ from common import CustomLogger, CustomSoap
 from prettytable import PrettyTable
 
 from resources.CiscoAXL import *
+from resources.CiscoCMS import *
 
 import os
 import sys
@@ -20,6 +21,7 @@ api = Api (app)
 infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab','DEBUG')
 #infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab')
 
+# Rest API para Cisco Unified Communications Manager
 api.add_resource(CiscoAXL_Change.CiscoAXL_Change, '/api/v1/CUCM/Change')
 api.add_resource(CiscoAXL_Phone.CiscoAXL_Phone, '/api/v1/CUCM/Phone')
 api.add_resource(CiscoAXL_ProcessNode.CiscoAXL_ProcessNode, '/api/v1/CUCM/ProcessNode')
@@ -29,6 +31,9 @@ api.add_resource(CiscoAXL_TransPattern.CiscoAXL_TransPattern, '/api/v1/CUCM/Tran
 api.add_resource(CiscoAXL_User.CiscoAXL_User, '/api/v1/CUCM/User')
 
 api.add_resource(CiscoAXL_File.CiscoAXL_File, '/api/v1/CUCM/File')
+
+# Rest API para Cisco Meeting Server
+api.add_resource(CiscoCMS_File.CiscoCMS_File, '/api/v1/CMS/File')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
