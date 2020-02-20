@@ -1,6 +1,7 @@
 Rest API
 ============================================
 .. toctree::
+    File
     transPattern
 
 Introducción

@@ -99,13 +99,15 @@ class CiscoAXL_File(Resource):
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
                 # Comenzamos el Bucle para dar de alta los Translation Pattern
+                result = {}
+                i = 1
                 for row in varFileReader:
-                    infoLogger.debug('Row: %s' % (row))
                     payload = payloadHeader + '&pattern=' + row['pattern'] + '&routePartitionName=' + row['routePartitionName'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName'] + '&calledPartyTransformationMask=' + row['calledPartyTransformationMask']
-                    infoLogger.debug('payload: %s' % (payload))
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
-                    #return (json.loads(response.text.encode('utf8')))
+                    result[i] = json.loads(response.text.encode('utf8'))
+                    i = i + 1
+                return (json.loads(json.dumps(result)))
             else:
                 # * Valor no correcto 
                 return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})

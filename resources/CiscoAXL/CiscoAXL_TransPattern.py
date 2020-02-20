@@ -122,7 +122,7 @@ class CiscoAXL_TransPattern(Resource):
             return jsonify({'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'], 'routePartitionName': varFORM['routePartitionName']})
         else:
             infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
-            return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
+            return jsonify({'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'pattern':varFORM['pattern'], 'routePartitionName': varFORM['routePartitionName']})
 
     def patch(self):
         # * Funcion para list un Translation Pattern
