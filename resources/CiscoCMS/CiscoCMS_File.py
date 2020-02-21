@@ -54,15 +54,15 @@ class CiscoCMS_File(Resource):
     def post(self):
         # * Funcion para crear un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_File' )
+        infoLogger.debug('Ha accedido a la funcion post de la clase CiscoCMS_File' )
         infoLogger.debug('Esta utilizando el metodo POST' )
 
         if 'File' not in request.files:
             # * La peticion de REST API no tiene un elemento File
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No file attribute'})
+            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: No file attribute'})
         elif request.files['File'].filename == '':
             # * La peticion de REST API no tiene adjunto un fichero.
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No selected file'})
+            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: No selected file'})
 
         varFORM = request.form
         varFORMFile = request.files['File']
@@ -79,30 +79,22 @@ class CiscoCMS_File(Resource):
             infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'})
+            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'})
             sys.exit()
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
-            if varFORM['action']  == 'phone':
-                # * Damos de alta los telefonos
-                varFieldNames = (
-                    "FirstName", "Surname", "userPrincipalName", "DirectoryNumber", "Type", "IPPhone", "MACAddress",
-                    "IncomingDID", "OutgoingDID", "CSS", "VoiceMail", "CallPickupGroup", "WebUser", "Locale", "ForwardCSS",
-                    "CallWaiting", "SRST")
-                varFileReader = csv.DictReader(varCSVFile, varFieldNames)
-            if varFORM['action']  == 'TransPattern':
-                # * Damos de alta los Translation Pattern
+            if varFORM['action']  == 'coSpaces':
+                # * Damos de alta los coSpace directamente en el CMS
                 varFileReader = csv.DictReader(varCSVFile)
                 # Variables comunes a todas las peticiones:
-                url = 'https://127.0.0.1:8443/api/v1/CUCM/TransPattern'
-                payloadHeader = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
+                url = 'https://' + varFORM['mmpHost'] + ':' + varFORM['mmpPort'] + '/api/v1/CUCM/' + varFORM['action']
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-                # Comenzamos el Bucle para dar de alta los Translation Pattern
+                # Comenzamos el Bucle para dar de alta los coSpaces
                 result = {}
                 i = 1
                 for row in varFileReader:
-                    payload = payloadHeader + '&pattern=' + row['pattern'] + '&routePartitionName=' + row['routePartitionName'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName'] + '&calledPartyTransformationMask=' + row['calledPartyTransformationMask']
+                    payload = '&name=' + row['name'] + '&uri=' + row['uri'] + '&secondaryUri=' + row['secondaryUri'] + '&callId=' + row['callId'] + '&cdrTag=' + row['cdrTag'] + '&defaultlayout=' + row['defaultlayout'] + '&tenant=' + row['tenant'] + '&callProfile=' + row['callProfile'] + '&requireCallId=' + row['requireCallId']
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
                     result[i] = json.loads(response.text.encode('utf8'))
@@ -110,11 +102,11 @@ class CiscoCMS_File(Resource):
                 return (json.loads(json.dumps(result)))
             else:
                 # * Valor no correcto 
-                return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
+                return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
 
         finally:
             # * Cerramos el fichero
             varCSVFile.close()
             infoLogger.info('Se ha cerrado el archivo %s' % (varFilename))
 
-        return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
+        return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'Ok'})
