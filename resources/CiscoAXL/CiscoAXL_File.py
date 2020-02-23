@@ -59,10 +59,10 @@ class CiscoAXL_File(Resource):
 
         if 'File' not in request.files:
             # * La peticion de REST API no tiene un elemento File
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No file attribute'})
+            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No file attribute'}),400
         elif request.files['File'].filename == '':
             # * La peticion de REST API no tiene adjunto un fichero.
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No selected file'})
+            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: No selected file'}),400
 
         varFORM = request.form
         varFORMFile = request.files['File']
@@ -79,7 +79,7 @@ class CiscoAXL_File(Resource):
             infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'})
+            return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'}),406
             sys.exit()
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
@@ -110,7 +110,7 @@ class CiscoAXL_File(Resource):
                 return (json.loads(json.dumps(result)))
             else:
                 # * Valor no correcto 
-                return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
+                return jsonify({'Class': 'CiscoAXL_File','AXL': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'}),400
 
         finally:
             # * Cerramos el fichero
