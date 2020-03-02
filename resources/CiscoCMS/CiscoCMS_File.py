@@ -47,7 +47,6 @@ import logging
 # *  PUT    - update - to update existing resource
 # *  DELETE - remove - to delete resources 
 # *  PATCH  - list   - to search resource
-# *
 # *------------------------------------------------------------------
 
 class CiscoCMS_File(Resource):
@@ -79,8 +78,7 @@ class CiscoCMS_File(Resource):
             infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: Can not open the file'})
-            sys.exit()
+            return {'Class': 'useCiscoCMS_Filerid','CMS': 'Add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Can not open the file'},400
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
             if varFORM['action']  == 'coSpaces':

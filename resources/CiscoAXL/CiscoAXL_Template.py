@@ -31,7 +31,6 @@
 # *  PUT    - update - to update existing resource
 # *  DELETE - remove - to delete resources 
 # *  PATCH  - list   - to search resource
-# *
 # *------------------------------------------------------------------
 
 # Import Modules
@@ -53,28 +52,28 @@ class CiscoAXL_Template(Resource):
         # * Funcion para obtener todos los parametros de un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_Template' )
-        return jsonify({'Class': 'Template','AXL': 'Get','Method': 'GET', 'Status': 'Ok'})
+        return {'Class': 'template','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def post(self):
         # * Funcion para crear un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Template' )
-        return jsonify({'Class': 'Template','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
+        return {'Class': 'template','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Template' )
-        return jsonify({'Class': 'Template','AXL': 'List','Method': 'PATCH', 'Status': 'Ok'})
+        return {'Class': 'template','AXL': 'list','Method': 'PATCH', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def put(self):
         # * Funcion para actualizar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_Template' )
-        return jsonify({'Class': 'Template','AXL': 'Update','Method': 'PUT', 'Status': 'Ok'})
+        return {'Class': 'template','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def delete(self):
         # * Funcion para borrar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_Template' )
-        return jsonify({'Class': 'Template','AXL': 'Remove','Method': 'DELETE', 'Status': 'Ok'})
+        return {'Class': 'template','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400

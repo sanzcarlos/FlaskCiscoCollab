@@ -23,6 +23,16 @@
 # *------------------------------------------------------------------
 # *
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Description
+# *
+# *  GET    - get    - to retrieve resource representation/information only
+# *  POST   - add    - to create new subordinate resources
+# *  PUT    - update - to update existing resource
+# *  DELETE - remove - to delete resources 
+# *  PATCH  - list   - to search resource
+# *------------------------------------------------------------------
+
 # Import Modules
 from flask import jsonify
 from flask_restful import Resource
@@ -42,15 +52,14 @@ class CiscoAXL_Phone(Resource):
         # * Funcion para obtener todos los parametros de un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_Phone' )
-        varJSON = request.get_json()
-        infoLogger.debug('El cliente es: %s' % (varJSON['Customer']))
-        infoLogger.debug('La direccion IP es: %s' % (varJSON['mmpHost']))
-        infoLogger.debug('Esta buscando el Phone con la MAC Address %s' % (varJSON['varMACAddress']))
-        CustomService = CustomSoap.ClientSoap (infoLogger,varJSON['mmpHost'],varJSON['mmpUser'],varJSON['mmpPass'],varJSON['mmpVersion'])
+        varFORM = request.form
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+        infoLogger.debug('Esta buscando el Phone con el nombre: %s' % (varFORM['name']))
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
         CustomSoap_Data = {
-            'name': 'SEP' + varJSON['varMACAddress']
+            'name': varFORM['name']
         }
 
         try:
@@ -59,30 +68,38 @@ class CiscoAXL_Phone(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            sys.exit()
+            return {'Class': 'Phone','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['name']},400
         else:
+            # *------------------------------------------------------------------
+            # * Tenemos que borrar la variable vendorConfig porque es una lista
+            # * y por ahora no hemos conseguido convertir la lista en una variable
+            # * JSON
+            # *------------------------------------------------------------------
+            temp = {}
+            for i in range(len(CustomUser_Resp['return']['phone']['vendorConfig']['_value_1'])):
+                temp[i] = CustomUser_Resp['return']['phone']['vendorConfig']['_value_1'][i]
+            CustomUser_Resp['return']['phone']['vendorConfig'] = 'removed flask app'
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
 
     def post(self):
         # * Funcion para crear un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Phone' )
-        return jsonify({'Class': 'Phone','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
+        return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Phone' )
-        return jsonify({'Class': 'Phone','AXL': 'List','Method': 'PATCH', 'Status': 'Ok'})
+        return {'Class': 'Phone','AXL': 'list','Method': 'PATCH', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def put(self):
         # * Funcion para actualizar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_Phone' )
-        return jsonify({'Class': 'Phone','AXL': 'Update','Method': 'PUT', 'Status': 'Ok'})
-
+        return {'Class': 'Phone','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
     def delete(self):
         # * Funcion para borrar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_Phone' )
-        return jsonify({'Class': 'Phone','AXL': 'Remove','Method': 'DELETE', 'Status': 'Ok'})
+        return {'Class': 'Phone','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400

@@ -57,12 +57,12 @@ class CiscoAXL_ProcessNode(Resource):
         varFORM = request.form
         infoLogger.debug('Los datos del formulario son: %s' % (varFORM))
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
-        infoLogger.debug('Esta buscando el ProcessNode: %s' % (varFORM['varProcessNodeName']))
+        infoLogger.debug('Esta buscando el ProcessNode: %s' % (varFORM['name']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
         CustomSoap_Data = {
-            'name': varFORM['varProcessNodeName']
+            'name': varFORM['name']
         }
 
         try:
@@ -71,7 +71,7 @@ class CiscoAXL_ProcessNode(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            sys.exit()
+            return {'Class': 'ProcessNode','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'name:':varFORM['name']},400
         else:
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
 
@@ -80,7 +80,7 @@ class CiscoAXL_ProcessNode(Resource):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo POST' )
-        return jsonify({'Class': 'ProcessNode','AXL': 'Add','Method': 'POST', 'Status': 'Ok'})
+        return {'Class': 'ProcessNode','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio listProcessNode
@@ -89,16 +89,16 @@ class CiscoAXL_ProcessNode(Resource):
         infoLogger.debug('Esta utilizando el metodo PATCH' )
         varFORM = request.form
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
-        infoLogger.debug('Esta buscando los ProcessNode con el siguiente criterio: %s' % (varFORM['varsearchCriteria']))
+        infoLogger.debug('Esta buscando los ProcessNode con el siguiente criterio: %s' % (varFORM['searchCriteria']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
-        varsearchCriteria = {'name':'%' + varFORM['varsearchCriteria'] + '%'}
-        varreturnedTags = {'name':'','description':'','mac':'','ipv6Name':'','nodeUsage':'','lbmHubGroup':''}
+        searchCriteria = {'name':'%' + varFORM['searchCriteria'] + '%'}
+        returnedTags = {'name':'','description':'','mac':'','ipv6Name':'','nodeUsage':'','lbmHubGroup':''}
 
         CustomSoap_Data = {
-            'searchCriteria': varsearchCriteria,
-            'returnedTags' : varreturnedTags,
+            'searchCriteria': searchCriteria,
+            'returnedTags' : returnedTags,
         }
 
         try:
@@ -107,7 +107,7 @@ class CiscoAXL_ProcessNode(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            sys.exit()
+            return {'Class': 'ProcessNode','AXL': 'list','Method': 'PATCH', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'searchCriteria':varFORM['searchCriteria']},400
         else:
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
 
@@ -116,11 +116,11 @@ class CiscoAXL_ProcessNode(Resource):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo PUT' )
-        return jsonify({'Class': 'ProcessNode','AXL': 'Update','Method': 'PUT', 'Status': 'Ok'})
+        return {'Class': 'ProcessNode','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def delete(self):
         # * Funcion para borrar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo DELETE' )
-        return jsonify({'Class': 'ProcessNode','AXL': 'Remove','Method': 'DELETE', 'Status': 'Ok'})
+        return {'Class': 'ProcessNode','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400

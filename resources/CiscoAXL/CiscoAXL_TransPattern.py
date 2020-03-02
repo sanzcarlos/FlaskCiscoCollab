@@ -23,6 +23,16 @@
 # *------------------------------------------------------------------
 # *
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Description
+# *
+# *  GET    - get    - to retrieve resource representation/information only
+# *  POST   - add    - to create new subordinate resources
+# *  PUT    - update - to update existing resource
+# *  DELETE - remove - to delete resources 
+# *  PATCH  - list   - to search resource
+# *------------------------------------------------------------------
+
 # Import Modules
 from flask import jsonify
 from flask_restful import Resource
@@ -44,7 +54,6 @@ class CiscoAXL_TransPattern(Resource):
 
         infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_TransPattern' )
         varFORM = request.form
-        # infoLogger.debug('Los datos del formulario son: %s' % (varFORM))
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
         infoLogger.debug('Esta buscando el Translation Pattern %s en la Particion %s' % (varFORM['varpattern'],varFORM['varroutePartitionName']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
@@ -129,18 +138,17 @@ class CiscoAXL_TransPattern(Resource):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_TransPattern' )
         varFORM = request.form
-        infoLogger.debug('Los datos del formulario son: %s' % (varFORM))
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
-        infoLogger.debug('Esta buscando los Translation Pattern con el siguiente criterio: %s' % (varFORM['varsearchCriteria']))
+        infoLogger.debug('Esta buscando los Translation Pattern con el siguiente criterio: %s' % (varFORM['searchCriteria']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
-        varsearchCriteria = {'pattern':'%' + varFORM['varsearchCriteria'] + '%'}
-        varreturnedTags = {'pattern':'','description':'','usage':'','routePartitionName':'','blockEnable':'','calledPartyTransformationMask':'','callingPartyTransformationMask':'','useCallingPartyPhoneMask':'','callingPartyPrefixDigits':'','dialPlanName':'','digitDiscardInstructionName':'','patternUrgency':'','prefixDigitsOut':'','routeFilterName':'','callingLinePresentationBit':'','callingNamePresentationBit':'','connectedLinePresentationBit':'','connectedNamePresentationBit':'','patternPrecedence':'','provideOutsideDialtone':'','callingPartyNumberingPlan':'','callingPartyNumberType':'','calledPartyNumberingPlan':'','calledPartyNumberType':'','callingSearchSpaceName':'','resourcePriorityNamespaceName':'','routeNextHopByCgpn':'','routeClass':'','callInterceptProfileName':'','releaseClause':'','useOriginatorCss':'','dontWaitForIDTOnSubsequentHops':'','isEmergencyServiceNumber':''}
+        searchCriteria = {'pattern':'%' + varFORM['searchCriteria'] + '%'}
+        returnedTags = {'pattern':'','description':'','usage':'','routePartitionName':'','blockEnable':'','calledPartyTransformationMask':'','callingPartyTransformationMask':'','useCallingPartyPhoneMask':'','callingPartyPrefixDigits':'','dialPlanName':'','digitDiscardInstructionName':'','patternUrgency':'','prefixDigitsOut':'','routeFilterName':'','callingLinePresentationBit':'','callingNamePresentationBit':'','connectedLinePresentationBit':'','connectedNamePresentationBit':'','patternPrecedence':'','provideOutsideDialtone':'','callingPartyNumberingPlan':'','callingPartyNumberType':'','calledPartyNumberingPlan':'','calledPartyNumberType':'','callingSearchSpaceName':'','resourcePriorityNamespaceName':'','routeNextHopByCgpn':'','routeClass':'','callInterceptProfileName':'','releaseClause':'','useOriginatorCss':'','dontWaitForIDTOnSubsequentHops':'','isEmergencyServiceNumber':''}
 
         CustomSoap_Data = {
-            'searchCriteria': varsearchCriteria,
-            'returnedTags' : varreturnedTags,
+            'searchCriteria': searchCriteria,
+            'returnedTags' : returnedTags,
         }
 
         try:
@@ -149,6 +157,7 @@ class CiscoAXL_TransPattern(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
+            return {'Class': 'TransPattern','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
             sys.exit()
         else:
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
@@ -157,10 +166,10 @@ class CiscoAXL_TransPattern(Resource):
         # * Funcion para actualizar un Translation Pattern
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_TransPattern' )
-        return jsonify({'Class': 'TransPattern','AXL': 'Update','Method': 'PUT', 'Status': 'Ok'})
+        return {'Class': 'TransPattern','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
 
     def delete(self):
         # * Funcion para borrar un Translation Pattern
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_TransPattern' )
-        return jsonify({'Class': 'TransPattern','AXL': 'Remove','Method': 'DELETE', 'Status': 'Ok'})
+        return {'Class': 'TransPattern','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
