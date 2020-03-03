@@ -27,6 +27,7 @@ api.add_resource(CiscoAXL_CallPickupGroup.CiscoAXL_CallPickupGroup, '/api/v1/CUC
 api.add_resource(CiscoAXL_Line.CiscoAXL_Line, '/api/v1/CUCM/Line')
 api.add_resource(CiscoAXL_Phone.CiscoAXL_Phone, '/api/v1/CUCM/Phone')
 api.add_resource(CiscoAXL_ProcessNode.CiscoAXL_ProcessNode, '/api/v1/CUCM/ProcessNode')
+api.add_resource(CiscoAXL_RoutePartition.CiscoAXL_RoutePartition, '/api/v1/CUCM/RoutePartition')
 api.add_resource(CiscoAXL_ServiceParameter.CiscoAXL_ServiceParameter, '/api/v1/CUCM/ServiceParameter')
 api.add_resource(CiscoAXL_Template.CiscoAXL_Template, '/api/v1/CUCM/Template')
 api.add_resource(CiscoAXL_TransPattern.CiscoAXL_TransPattern, '/api/v1/CUCM/TransPattern')
