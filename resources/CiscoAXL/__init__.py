@@ -1,5 +1,6 @@
 __all__ = ['CiscoAXL_Change',
            'CiscoAXL_File',
+           'CiscoAXL_Line',
            'CiscoAXL_Phone',
            'CiscoAXL_ProcessNode',
            'CiscoAXL_ServiceParameter',

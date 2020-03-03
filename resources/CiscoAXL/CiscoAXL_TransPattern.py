@@ -51,30 +51,32 @@ class CiscoAXL_TransPattern(Resource):
     def get(self):
         # * Funcion para obtener todos los datos de un Translation Pattern
         infoLogger = logging.getLogger('FlaskCiscoCollab')
-
         infoLogger.debug('Ha accedido a la funcion get de la clase CiscoAXL_TransPattern' )
         varFORM = request.form
+        if all (k in varFORM for k in ('pattern', 'routePartitionName')):
+            infoLogger.debug('Esta buscando el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            CustomSoap_Data = {
+                    'pattern': varFORM['pattern'],
+                    'routePartitionName': varFORM['routePartitionName']
+            }
+        else:
+            infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+            return {'Class': 'TransPattern','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
+
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
-        infoLogger.debug('Esta buscando el Translation Pattern %s en la Particion %s' % (varFORM['varpattern'],varFORM['varroutePartitionName']))
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
-        CustomSoap_Data = {
-            'pattern': varFORM['varpattern'],
-            'routePartitionName': varFORM['varroutePartitionName']
-        }
-
         try:
             CustomUser_Resp = CustomService.getTransPattern(**CustomSoap_Data)
-            #CustomUser_Resp = CustomService.getTransPattern(CustomSoap_Data)
         except:
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
             infoLogger.error(type(zeep.helpers.serialize_object(sys.exc_info()[1])))
-            return jsonify({'Class': 'TransPattern','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'], 'routePartitionName': varFORM['routePartitionName']})
+            return {'Class': 'TransPattern','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
-            infoLogger.info('Se ha encontrado el Translation Pattern %s en la Particion %s' % (varFORM['varpattern'],varFORM['varroutePartitionName']))
+            infoLogger.info('Se ha encontrado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
 
     def post(self):
@@ -128,10 +130,10 @@ class CiscoAXL_TransPattern(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            return jsonify({'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'], 'routePartitionName': varFORM['routePartitionName']})
+            return {'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
             infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
-            return jsonify({'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'pattern':varFORM['pattern'], 'routePartitionName': varFORM['routePartitionName']})
+            return {'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
 
     def patch(self):
         # * Funcion para list un Translation Pattern
@@ -172,4 +174,29 @@ class CiscoAXL_TransPattern(Resource):
         # * Funcion para borrar un Translation Pattern
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion delete de la clase CiscoAXL_TransPattern' )
-        return {'Class': 'TransPattern','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+        varFORM = request.form
+        if all (k in varFORM for k in ('pattern', 'routePartitionName')):
+            infoLogger.debug('Esta borrando el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            CustomSoap_Data = {
+                    'pattern': varFORM['pattern'],
+                    'routePartitionName': varFORM['routePartitionName']
+            }
+        else:
+            infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+            return {'Class': 'TransPattern','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
+
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
+        CustomService = CustomService.CustomSoapClient ()
+
+        try:
+            CustomUser_Resp = CustomService.removeTransPattern(**CustomSoap_Data)
+        except:
+            infoLogger.error('Se ha producido un error en la consulta SOAP')
+            infoLogger.debug(sys.exc_info())
+            infoLogger.error(sys.exc_info()[1])
+            infoLogger.error(type(zeep.helpers.serialize_object(sys.exc_info()[1])))
+            return {'Class': 'TransPattern','AXL': 'remove','Method': 'DELETE', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
+        else:
+            infoLogger.info('Se ha encontrado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            return {'Class': 'TransPattern','AXL': 'remove','Method': 'DELETE', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']}

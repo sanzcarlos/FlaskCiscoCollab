@@ -23,6 +23,7 @@ infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab'
 
 # Rest API para Cisco Unified Communications Manager
 api.add_resource(CiscoAXL_Change.CiscoAXL_Change, '/api/v1/CUCM/Change')
+api.add_resource(CiscoAXL_Line.CiscoAXL_Line, '/api/v1/CUCM/Line')
 api.add_resource(CiscoAXL_Phone.CiscoAXL_Phone, '/api/v1/CUCM/Phone')
 api.add_resource(CiscoAXL_ProcessNode.CiscoAXL_ProcessNode, '/api/v1/CUCM/ProcessNode')
 api.add_resource(CiscoAXL_ServiceParameter.CiscoAXL_ServiceParameter, '/api/v1/CUCM/ServiceParameter')
