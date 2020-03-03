@@ -80,10 +80,88 @@ class CiscoAXL_Line(Resource):
             return json.loads(json.dumps(zeep.helpers.serialize_object(CustomUser_Resp['return'])))
 
     def post(self):
-        # * Funcion para crear un elemento
+        # * Funcion para crear un Directory Number
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Line' )
-        return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+        varFORM = request.form
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+        if all (k in varFORM for k in ('pattern', 'usage', 'routePartitionName')):
+            infoLogger.debug('Se quiere dar de alta el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            CustomSoap_Data = {
+                    'pattern': varFORM['pattern'],
+                    'usage': varFORM['usage'],
+                    'routePartitionName': varFORM['routePartitionName']
+            }
+        else:
+            infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
+
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
+        CustomService = CustomService.CustomSoapClient ()
+
+        # Comprobamos si existe la Key description
+        if 'description' in varFORM:
+            CustomSoap_Data['description'] = varFORM['description']
+
+        # Comprobamos si existe la Key alertingName
+        if 'alertingName' in varFORM:
+            CustomSoap_Data['alertingName'] = varFORM['alertingName']
+
+        # Comprobamos si existe la Key voiceMailProfileName
+        if 'voiceMailProfileName' in varFORM:
+            CustomSoap_Data['voiceMailProfileName'] = varFORM['voiceMailProfileName']
+
+        # Comprobamos si existe la Key allowCtiControlFlag
+        if 'allowCtiControlFlag' in varFORM:
+            CustomSoap_Data['allowCtiControlFlag'] = varFORM['allowCtiControlFlag']
+        else:
+            CustomSoap_Data['allowCtiControlFlag'] = 'true'
+
+        # Comprobamos si existe la Key shareLineAppearanceCssName
+        if 'shareLineAppearanceCssName' in varFORM:
+            CustomSoap_Data['shareLineAppearanceCssName'] = varFORM['shareLineAppearanceCssName']
+
+        # Comprobamos si existe la Key callPickupGroupName
+        if 'callPickupGroupName' in varFORM:
+            CustomSoap_Data['callPickupGroupName'] = varFORM['callPickupGroupName']
+
+        # Comprobamos si existe la Key callForwardAll
+        if 'callForwardAll' in varFORM:
+            CustomSoap_Data['callForwardAll'] = {
+                'destination': '',
+                'forwardToVoiceMail': 'false',
+                'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+                'secondaryCallingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+            }
+
+        # Comprobamos si existe la Key callForwardBusy
+        if 'callForwardBusy' in varFORM:
+            CustomSoap_Data['callForwardBusy'] = {
+                'destination': '',
+                'forwardToVoiceMail': 'false',
+                'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+            }
+            CustomSoap_Data['callForwardBusyInt'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNoAnswer'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNoAnswerInt'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNoCoverage'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNoCoverageInt'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardOnFailure'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNotRegistered'] = CustomSoap_Data['callForwardBusy']
+            CustomSoap_Data['callForwardNotRegisteredInt'] = CustomSoap_Data['callForwardBusy']
+
+        # Replicando el bucle anterior puedo añadir todas las variables que tiene un Directory Number
+        try:
+            # Damos de alta el Directory Number y no verificamos si existe el mismo Directory Number
+            CustomUser_Resp = CustomService.addLine(CustomSoap_Data)
+        except:
+            infoLogger.error('Se ha producido un error en la consulta SOAP')
+            infoLogger.debug(sys.exc_info())
+            infoLogger.error(sys.exc_info()[1])
+            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
+        else:
+            infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio
