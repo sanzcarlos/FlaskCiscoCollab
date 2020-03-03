@@ -1,4 +1,5 @@
 __all__ = ['CiscoAXL_Change',
+           'CiscoAXL_CallPickupGroup',
            'CiscoAXL_File',
            'CiscoAXL_Line',
            'CiscoAXL_Phone',
