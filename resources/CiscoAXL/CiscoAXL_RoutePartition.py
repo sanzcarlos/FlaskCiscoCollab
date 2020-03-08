@@ -5,7 +5,7 @@
 # *
 # * Cisco AXL Python
 # *
-# * Copyright (C) 2015 Carlos Sanz <carlos.sanzpenas@gmail.com>
+# * Copyright (C) 2020 Carlos Sanz <carlos.sanzpenas@gmail.com>
 # *
 # *  This program is free software; you can redistribute it and/or
 # * modify it under the terms of the GNU General Public License
