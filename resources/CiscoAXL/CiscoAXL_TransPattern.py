@@ -132,8 +132,9 @@ class CiscoAXL_TransPattern(Resource):
             infoLogger.error(sys.exc_info()[1])
             return {'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
+            infoLogger.debug('CustomUser_Resp %s' % (CustomUser_Resp))
             infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
-            return {'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
+            return {'Class': 'TransPattern','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']}
 
     def patch(self):
         # * Funcion para list un Translation Pattern

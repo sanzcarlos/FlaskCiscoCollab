@@ -95,14 +95,27 @@ class CiscoAXL_File(Resource):
                 varFileReader = csv.DictReader(varCSVFile)
                 # Variables comunes a todas las peticiones:
                 url = 'https://127.0.0.1:8443/api/v1/CUCM/TransPattern'
-                payloadHeader = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
+                payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
                 # Comenzamos el Bucle para dar de alta los Translation Pattern
                 result = {}
                 i = 1
                 for row in varFileReader:
-                    payload = payloadHeader + '&pattern=' + row['pattern'] + '&routePartitionName=' + row['routePartitionName'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName'] + '&calledPartyTransformationMask=' + row['calledPartyTransformationMask']
+                    if 'pattern' in row:
+                        payload = payload + '&pattern=' + row['pattern']
+                    if 'description' in row:
+                        payload = payload + '&description=' + row['description']
+                    if 'routePartitionName' in row:
+                        payload = payload + '&routePartitionName=' + row['routePartitionName']
+                    if 'callingSearchSpaceName' in row:
+                        payload = payload + '&callingSearchSpaceName=' + row['callingSearchSpaceName']
+                    if 'calledPartyTransformationMask' in row:
+                        payload = payload + '&calledPartyTransformationMask=' + row['calledPartyTransformationMask']
+                    if 'patternUrgency' in row:
+                        payload = payload + '&patternUrgency=' + row['patternUrgency']
+                    if 'provideOutsideDialtone' in row:
+                        payload = payload + '&provideOutsideDialtone=' + row['provideOutsideDialtone']
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
                     result[i] = json.loads(response.text.encode('utf8'))

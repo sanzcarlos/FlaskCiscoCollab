@@ -2,13 +2,24 @@
 Aqui es donde se guardan los ficheros subidos por la Rest API
 
 # Template
+La primera línea del fichero contiene el valor de los campos.
 ## CUCM
 ### TransPattern
-El formato de los archivos que se suben es:
+Los campo que podemos utilizar, porque son los que estan implementado en la funciona CiscoAXL_TransPattern son:
+
+ * pattern
+ * routePartitionName
+ * description
+ * calledPartyTransformationMask
+ * callingSearchSpaceName
+ * patternUrgency
+ * provideOutsideDialtone
+
+El formato que tenemos que utilizar para dar de alta Translation Pattern es:
 
 ```
-pattern,routePartitionName,callingSearchSpaceName,calledPartyTransformationMask
-6612204,Interna,1_Interna,12204
+pattern,description,routePartitionName,callingSearchSpaceName,calledPartyTransformationMask
+6612204,6612204 - 12204,Interna,1_Interna,12204
 ```
 ## CMS
 ### coSpace
