@@ -1,2 +1,2 @@
-pattern,description,routePartitionName,callingSearchSpaceName,calledPartyTransformationMask
-6612204,6612204 - 12204 - Es una prueba,Interna,1_Interna,12204
+pattern,routePartitionName,callingSearchSpaceName,calledPartyTransformationMask
+6612204,Interna,1_Interna,12204

@@ -83,13 +83,43 @@ class CiscoAXL_File(Resource):
             sys.exit()
         else:
             infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
-            if varFORM['action']  == 'phone':
+            if varFORM['action']  == 'Phone':
                 # * Damos de alta los telefonos
-                varFieldNames = (
-                    "FirstName", "Surname", "userPrincipalName", "DirectoryNumber", "Type", "IPPhone", "MACAddress",
-                    "IncomingDID", "OutgoingDID", "CSS", "VoiceMail", "CallPickupGroup", "WebUser", "Locale", "ForwardCSS",
-                    "CallWaiting", "SRST")
-                varFileReader = csv.DictReader(varCSVFile, varFieldNames)
+                varFileReader = csv.DictReader(varCSVFile)
+                # Variables comunes a todas las peticiones:
+                payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
+                headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+                # Comenzamos el Bucle para dar de alta los Directory Number y los Telefono
+                result = {}
+                i = 1
+                for row in varFileReader:
+                    # Damos de alta la linea
+                    url = 'https://127.0.0.1:8443/api/v1/CUCM/Line'
+                    if 'FirstName' in row:
+                        if 'Surname' in row:
+                            payload = payload + '&description=' + row['pattern'] + ' - ' + row['FirstName'] + ' ' + row['Surname'] + '&alertingName=' + row['pattern'] + ' - ' + row['FirstName'] + ' ' + row['Surname']
+                    if 'routePartitionName' in row:
+                        payload = payload + '&routePartitionName=' + row['routePartitionName']
+                    if 'shareLineAppearanceCssName' in row:
+                        payload = payload + '&shareLineAppearanceCssName=' + row['shareLineAppearanceCssName']
+                    if 'pattern' in row:
+                        payload = payload + '&pattern=' + row['pattern']
+                    if 'callForwardAll' in row:
+                        if 'callingSearchSpaceName' in row:
+                            payload = payload + '&callForwardAll=' + row['callForwardAll'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName']
+                        else:
+                            payload = payload + '&callForwardAll=' + row['callForwardAll']
+                    if 'callPickupGroupName' in row:
+                        payload = payload + '&callPickupGroupName=' + row['callPickupGroupName']
+                    infoLogger.debug('payload: %s' % (payload))
+                    response = requests.request('POST', url, verify=False, headers=headers, data = payload)
+                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                    result['Line' + str(i)] = json.loads(response.text.encode('utf8'))
+                    # Damos de alta el Telefono
+                    #url = 'https://127.0.0.1:8443/api/v1/CUCM/Phone'
+                    i = i + 1
+                return (json.loads(json.dumps(result)))
+
             if varFORM['action']  == 'TransPattern':
                 # * Damos de alta los Translation Pattern
                 varFileReader = csv.DictReader(varCSVFile)

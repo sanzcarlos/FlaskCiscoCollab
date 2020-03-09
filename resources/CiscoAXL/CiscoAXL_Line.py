@@ -85,11 +85,10 @@ class CiscoAXL_Line(Resource):
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_Line' )
         varFORM = request.form
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
-        if all (k in varFORM for k in ('pattern', 'usage', 'routePartitionName')):
+        if all (k in varFORM for k in ('pattern', 'routePartitionName')):
             infoLogger.debug('Se quiere dar de alta el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
             CustomSoap_Data = {
                     'pattern': varFORM['pattern'],
-                    'usage': varFORM['usage'],
                     'routePartitionName': varFORM['routePartitionName']
             }
         else:
@@ -98,6 +97,12 @@ class CiscoAXL_Line(Resource):
 
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
+
+        # Comprobamos si existe la Key usage
+        if 'usage' in varFORM:
+            CustomSoap_Data['usage'] = varFORM['usage']
+        else:
+            CustomSoap_Data['usage'] = 'Device'
 
         # Comprobamos si existe la Key description
         if 'description' in varFORM:
@@ -125,22 +130,32 @@ class CiscoAXL_Line(Resource):
         if 'callPickupGroupName' in varFORM:
             CustomSoap_Data['callPickupGroupName'] = varFORM['callPickupGroupName']
 
-        # Comprobamos si existe la Key callForwardAll
+        # Comprobamos si existe la Key callForwardAll callingSearchSpaceName
         if 'callForwardAll' in varFORM:
-            CustomSoap_Data['callForwardAll'] = {
-                'destination': '',
-                'forwardToVoiceMail': 'false',
-                'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
-                'secondaryCallingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
-            }
-
-        # Comprobamos si existe la Key callForwardBusy
-        if 'callForwardBusy' in varFORM:
-            CustomSoap_Data['callForwardBusy'] = {
-                'destination': '',
-                'forwardToVoiceMail': 'false',
-                'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
-            }
+            if 'callingSearchSpaceName' in varFORM:
+                CustomSoap_Data['callForwardAll'] = {
+                    'destination': '',
+                    'forwardToVoiceMail': 'false',
+                    'callingSearchSpaceName': varFORM['callingSearchSpaceName'],
+                    'secondaryCallingSearchSpaceName': varFORM['callingSearchSpaceName'],
+                }
+                CustomSoap_Data['callForwardBusy'] = {
+                    'destination': '',
+                    'forwardToVoiceMail': 'false',
+                    'callingSearchSpaceName': varFORM['callingSearchSpaceName'],
+                }
+            else:
+                CustomSoap_Data['callForwardAll'] = {
+                    'destination': '',
+                    'forwardToVoiceMail': 'false',
+                    'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+                    'secondaryCallingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+                }
+                CustomSoap_Data['callForwardBusy'] = {
+                    'destination': '',
+                    'forwardToVoiceMail': 'false',
+                    'callingSearchSpaceName': varFORM['shareLineAppearanceCssName'],
+                }
             CustomSoap_Data['callForwardBusyInt'] = CustomSoap_Data['callForwardBusy']
             CustomSoap_Data['callForwardNoAnswer'] = CustomSoap_Data['callForwardBusy']
             CustomSoap_Data['callForwardNoAnswerInt'] = CustomSoap_Data['callForwardBusy']
@@ -161,7 +176,7 @@ class CiscoAXL_Line(Resource):
             return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
             infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
-            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
+            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']}
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio

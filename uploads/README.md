@@ -4,6 +4,24 @@ Aqui es donde se guardan los ficheros subidos por la Rest API
 # Template
 La primera línea del fichero contiene el valor de los campos.
 ## CUCM
+### Phone
+Los campo que podemos utilizar, porque son los que estan implementado en la funciona CiscoAXL_Line y CiscoAXL_Phone son:
+
+ * FirstName
+ * Surname
+ * userPrincipalName
+ * pattern
+ * routePartitionName
+ * shareLineAppearanceCssName
+ * callForwardAll
+ * callingSearchSpaceName
+
+El formato que tenemos que utilizar para dar de alta Translation Pattern es:
+
+```
+FirstName,Surname,userPrincipalName,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName
+Carlos,Sanz,carlos.sanz,12205,Interna,4_Internacional,,1_Interna
+```
 ### TransPattern
 Los campo que podemos utilizar, porque son los que estan implementado en la funciona CiscoAXL_TransPattern son:
 
