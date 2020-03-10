@@ -23,6 +23,8 @@ FirstName,Surname,userPrincipalName,pattern,routePartitionName,shareLineAppearan
 Carlos,Sanz,carlos.sanz,12205,Interna,4_Internacional,,1_Interna
 ```
 ### TransPattern
+Con esta función vamos a poder dar de alta un Translation Pattern.
+
 Los campo que podemos utilizar, porque son los que estan implementado en la funciona CiscoAXL_TransPattern son:
 
  * pattern
