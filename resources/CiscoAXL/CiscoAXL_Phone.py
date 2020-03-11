@@ -178,9 +178,6 @@ class CiscoAXL_Phone(Resource):
             infoLogger.info('Se ha configurado el telefono %s' % (varFORM['name']))
             return jsonify({'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'name':varFORM['name'], 'product': varFORM['product']})
 
-
-        return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
-
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio
         infoLogger = logging.getLogger('FlaskCiscoCollab')
@@ -191,7 +188,39 @@ class CiscoAXL_Phone(Resource):
         # * Funcion para actualizar un elemento
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_Phone' )
-        return {'Class': 'Phone','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+        varFORM = request.form
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
+        CustomService = CustomService.CustomSoapClient ()
+
+        CustomSoap_Data = {}
+
+        # Comprobamos si existe las siguientes Key's name
+        if 'name' in varFORM:
+            CustomSoap_Data['name'] = varFORM['name']
+            if 'newName' in varFORM:
+                CustomSoap_Data['newName'] = varFORM['newName']
+            else:
+                CustomSoap_Data['newName'] = varFORM['name']
+        else:
+            infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+            return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
+
+        # Comprobamos si existe la Key ownerUserName
+        if 'ownerUserName' in varFORM:
+            CustomSoap_Data['ownerUserName'] = varFORM['ownerUserName']
+
+        try:
+            CustomUser_Resp = CustomService.updatePhone(**CustomSoap_Data)
+        except:
+            infoLogger.error('Se ha producido un error en la consulta SOAP')
+            infoLogger.debug(sys.exc_info())
+            infoLogger.error(sys.exc_info()[1])
+            return {'Class': 'Phone','AXL': 'update','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'name':varFORM['name']}
+        else:
+            infoLogger.info('Se ha configurado el telefono %s' % (varFORM['name']))
+            return {'Class': 'Phone','AXL': 'update','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'name':varFORM['name']}
 
     def delete(self):
         # * Funcion para borrar un telefono
