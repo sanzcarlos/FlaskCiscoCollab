@@ -87,12 +87,12 @@ class CiscoAXL_File(Resource):
                 # * Damos de alta los telefonos
                 varFileReader = csv.DictReader(varCSVFile)
                 # Variables comunes a todas las peticiones:
-                payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
                 # Comenzamos el Bucle para dar de alta los Directory Number y los Telefono
                 result = {}
                 i = 1
                 for row in varFileReader:
+                    payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
                     # Damos de alta la linea
                     url = 'https://127.0.0.1:8443/api/v1/CUCM/Line'
                     if 'FirstName' in row:
@@ -115,8 +115,59 @@ class CiscoAXL_File(Resource):
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
                     result['Line' + str(i)] = json.loads(response.text.encode('utf8'))
+
                     # Damos de alta el Telefono
-                    #url = 'https://127.0.0.1:8443/api/v1/CUCM/Phone'
+                    url = 'https://127.0.0.1:8443/api/v1/CUCM/Phone'
+                    infoLogger.debug('IPPhone: %s' % (row['IPPhone'][0:3]))
+                    if 'IPPhone' in row:
+                        if row['IPPhone'][0:2] == '39' or \
+                            row['IPPhone'][0:2] == '78' or \
+                            row['IPPhone'][0:2] == '88' or \
+                            row['IPPhone'][0:2] == '99' or \
+                            row['IPPhone'][0:7] == 'ATA 190':
+                            payload = payload + '&protocol=SIP&product=Cisco ' + row['IPPhone']
+                            infoLogger.debug('payload: %s' % (payload))
+                        # Definición Cisco Unified Client Services Framework
+                        elif row['IPPhone'][0:3] == 'CSF':
+                            payload = payload + '&protocol=SIP&product=Cisco Unified Client Services Framework'                        
+                            infoLogger.debug('payload: %s' % (payload))
+                        # Definición Third-party SIP Device (Advanced)
+                        elif row['IPPhone'][0:3] == 'SIP':
+                            payload = payload + '&protocol=SIP&product=Third-party SIP Device (Advanced)'
+                            infoLogger.debug('payload: %s' % (payload))
+                        # Definición de maxNumCalls y busyTrigger
+                        else:
+                            payload = payload + '&protocol=SCCP&product=Cisco ' + row['IPPhone']
+                            infoLogger.debug('payload: %s' % (payload))
+                        # Definición de maxNumCalls y busyTrigger
+                        if row['IPPhone'][0:2] == '39' or \
+                            row['IPPhone'][0:2] == 'ATA':
+                            row['maxNumCalls']='2'
+                            row['busyTrigger']='1'
+                        else:
+                            row['maxNumCalls']='4'
+                            row['busyTrigger']='2'
+                    else:
+                        infoLogger.error('No esta el campo IPPhone: %s' % (row))
+                        return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan el parametro IPPhone'},400
+
+                    # Comprobamos si existe la Key userPrincipalName
+                    if 'userPrincipalName' in row:
+                        payload = payload + '&ownerUserName=' + row['userPrincipalName']
+                    if 'digestUser' in row:
+                        payload = payload + '&digestUser=' + row['digestUser']
+                            
+                    # Comprobamos si existe la Key name, devicePoolName, commonPhoneConfigName, locationName, phoneTemplateName
+                    if all (k in row for k in ('name', 'devicePoolName', 'commonPhoneConfigName','locationName', 'phoneTemplateName', 'routePartitionName')):
+                        payload = payload + '&name=' + row['name'] + '&devicePoolName=' + row['devicePoolName'] + '&commonPhoneConfigName=' + row['commonPhoneConfigName'] + '&locationName=' + row['locationName'] + '&phoneTemplateName=' + row['phoneTemplateName'] + '&lines=' + row['pattern'] + '&routePartitionName=' + row['routePartitionName']
+                    else:
+                        infoLogger.error('No estan todas los parametros requeridos: %s' % (row))
+                        return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Falta alguno de los siguientes parametros parametros: name, devicePoolName, commonPhoneConfigName, locationName, phoneTemplateName'},400
+                    infoLogger.debug('payload: %s' % (payload))
+                    response = requests.request('POST', url, verify=False, headers=headers, data = payload)
+                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                    result['Phone' + str(i)] = json.loads(response.text.encode('utf8'))
+
                     i = i + 1
                 return (json.loads(json.dumps(result)))
 
@@ -125,13 +176,13 @@ class CiscoAXL_File(Resource):
                 varFileReader = csv.DictReader(varCSVFile)
                 # Variables comunes a todas las peticiones:
                 url = 'https://127.0.0.1:8443/api/v1/CUCM/TransPattern'
-                payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
                 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
                 # Comenzamos el Bucle para dar de alta los Translation Pattern
                 result = {}
                 i = 1
                 for row in varFileReader:
+                    payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
                     if 'pattern' in row:
                         payload = payload + '&pattern=' + row['pattern']
                     if 'description' in row:

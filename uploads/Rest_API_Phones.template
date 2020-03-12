@@ -1,2 +1,6 @@
-FirstName,Surname,userPrincipalName,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll
-Carlos,Sanz,carlos.sanz,12205,Interna,4_Internacional,
+FirstName,Surname,userPrincipalName,digestUser,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName,IPPhone,name,devicePoolName,commonPhoneConfigName,locationName,phoneTemplateName
+Carlos,Sanz,carlos.sanz,,12205,Interna,4_Internacional,,1_Interna,8845,SEPAABBCCDDEEFF,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 8845 SIP
+Alan,Jimenez,alan.jimenez,alan.jimenez,12207,Interna,4_Internacional,,1_Interna,7841,SEPAABBCCDDEEF5,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7841 SIP
+Hilario,Martin,telefoniaip,hilario.martin,12206,Interna,4_Internacional,,1_Interna,CSF,CSF12206,Madrid,Axians_Common_Phone_Profile,Madrid,Standard Client Services Framework
+Alan,Jimenez,alan.jimenez,alan.jimenez,12207,Interna,4_Internacional,,1_Interna,7841,SEPAABBCCDDEEF5,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7841 SIP
+Hilario,Martin,telefoniaip,hilario.martin,12206,Interna,4_Internacional,,1_Interna,CSF,CSF12206,Madrid,Axians_Common_Phone_Profile,Madrid,Standard Client Services Framework

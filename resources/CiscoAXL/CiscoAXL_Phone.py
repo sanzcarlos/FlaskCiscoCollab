@@ -93,49 +93,71 @@ class CiscoAXL_Phone(Resource):
 
         CustomSoap_Data = {}
 
-        # Comprobamos si existe las siguientes Key's name, product, class, protocol, protocolSide, devicePoolName, commonPhoneConfigName, locationName, useTrustedRelayPoint, phoneTemplateName, primaryPhoneName, builtInBridgeStatus, packetCaptureMode, certificateOperation and deviceMobilityMode
-        if all (k in varFORM for k in ('name', 'product', 'class', 'protocol', 'protocolSide', 'devicePoolName', 'commonPhoneConfigName', 'locationName', 'useTrustedRelayPoint', 'phoneTemplateName', 'primaryPhoneName', 'builtInBridgeStatus', 'packetCaptureMode', 'certificateOperation', 'deviceMobilityMode')):
+        # Configuramos los parámetros por defecto
+        CustomSoap_Data['class'] = 'Phone'
+        CustomSoap_Data['protocolSide'] = 'User'
+
+        # Comprobamos si existe la Key certificateOperation
+        if 'certificateOperation' in varFORM:
+            CustomSoap_Data['certificateOperation'] = varFORM['certificateOperation']
+        else:
+            CustomSoap_Data['certificateOperation'] = 'No Pending Operation'
+        CustomSoap_Data['useTrustedRelayPoint'] = 'Default'
+        CustomSoap_Data['builtInBridgeStatus'] = 'Default'
+        CustomSoap_Data['packetCaptureMode'] = 'None'
+        CustomSoap_Data['deviceMobilityMode'] = 'Default'
+
+        # Comprobamos si existe las siguientes Key's name, product, class, protocol, protocolSide, devicePoolName, commonPhoneConfigName, locationName, useTrustedRelayPoint and phoneTemplateName
+        if all (k in varFORM for k in ('name', 'product', 'protocol', 'devicePoolName', 'commonPhoneConfigName', 'locationName', 'phoneTemplateName')):
             infoLogger.debug('Se quiere dar de alta un telefono con el nombre %s modelo %s' % (varFORM['name'],varFORM['product']))
             CustomSoap_Data['name'] = varFORM['name']
             CustomSoap_Data['product'] = varFORM['product']
-            CustomSoap_Data['class'] = varFORM['class']
             CustomSoap_Data['protocol'] = varFORM['protocol']
-            CustomSoap_Data['protocolSide'] = varFORM['protocolSide']
             CustomSoap_Data['devicePoolName'] = varFORM['devicePoolName']
             CustomSoap_Data['commonPhoneConfigName'] = varFORM['commonPhoneConfigName']
             CustomSoap_Data['locationName'] = varFORM['locationName']
-            CustomSoap_Data['useTrustedRelayPoint'] = varFORM['useTrustedRelayPoint']
             CustomSoap_Data['phoneTemplateName'] = varFORM['phoneTemplateName']
-            CustomSoap_Data['builtInBridgeStatus'] = varFORM['builtInBridgeStatus']
-            CustomSoap_Data['packetCaptureMode'] = varFORM['packetCaptureMode']
-            CustomSoap_Data['certificateOperation'] = varFORM['certificateOperation']
-            CustomSoap_Data['deviceMobilityMode'] = varFORM['deviceMobilityMode']
         else:
             infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
             return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
         
         # Comprobamos si existe la Key description
         if 'description' in varFORM:
-            CustomSoap_Data['description'] = varFORM['description']
+            CustomSoap_Data['description'] = varFORM['description']           
         # Comprobamos si existe la Key ownerUserName
         if 'ownerUserName' in varFORM:
             CustomSoap_Data['ownerUserName'] = varFORM['ownerUserName']
             # Comprobamos si existe la Key digestUser
             if 'digestUser' in varFORM:
-                CustomSoap_Data['digestUser'] = varFORM['digestUser']
-            else:
-                CustomSoap_Data['digestUser'] = varFORM['ownerUserName']
+                if 'digestUser' == '':
+                    CustomSoap_Data['digestUser'] = varFORM['ownerUserName']
+                else:
+                    CustomSoap_Data['digestUser'] = varFORM['digestUser']
         # Comprobamos si existe la Key subscribeCallingSearchSpaceName
         if 'subscribeCallingSearchSpaceName' in varFORM:
             CustomSoap_Data['subscribeCallingSearchSpaceName'] = varFORM['subscribeCallingSearchSpaceName']
+        # Comprobamos si existe la Key maxNumCalls
+        if 'maxNumCalls' in varFORM:
+            CustomSoap_Data['maxNumCalls'] = varFORM['maxNumCalls']
+        else:
+            CustomSoap_Data['maxNumCalls'] = '2'
+        # Comprobamos si existe la Key busyTrigger
+        if 'busyTrigger' in varFORM:
+            CustomSoap_Data['busyTrigger'] = varFORM['busyTrigger']
+        else:
+            CustomSoap_Data['busyTrigger'] = '1'
+        # Comprobamos si existe la Key e164Mask
+        if 'e164Mask' in varFORM:
+            CustomSoap_Data['e164Mask'] = varFORM['e164Mask']
+       
         # Comprobamos si existe la Key lines
-        if all (k in varFORM for k in ('lines', 'routePartitionName', 'e164Mask')):
+        if all (k in varFORM for k in ('lines', 'routePartitionName')):
             if 'ownerUserName' in varFORM:
                 CustomSoap_Data['lines'] = {
                     'line':{
                         'index': 1,
-                        'display': varFORM['lines'] + ' ' + varFORM['description'],
-                        'e164Mask': varFORM['e164Mask'],
+                        'display': varFORM['description'],
+                        #'e164Mask': CustomSoap_Data['e164Mask'],
                         'label': varFORM['lines'] + ' ' + varFORM['description'],
                         'dirn': {
                             'pattern': varFORM['lines'],
@@ -146,8 +168,8 @@ class CiscoAXL_Phone(Resource):
                                 'userId': varFORM['ownerUserName'],
                             },
                         },
-                        'maxNumCalls': 6,
-                        'busyTrigger': 2,
+                        'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                        'busyTrigger': CustomSoap_Data['busyTrigger'],
                     },
                 }
             else:
@@ -155,17 +177,21 @@ class CiscoAXL_Phone(Resource):
                     'line':{
                         'index': 1,
                         'display': varFORM['lines'] + ' ' + varFORM['description'],
-                        'e164Mask': varFORM['e164Mask'],
+                        #'e164Mask': CustomSoap_Data['e164Mask'],
                         'label': varFORM['lines'] + ' ' + varFORM['description'],
                         'dirn': {
                             'pattern': varFORM['lines'],
                             'routePartitionName': varFORM['routePartitionName'],
                         },
-                        'maxNumCalls': 6,
-                        'busyTrigger': 2,
+                        'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                        'busyTrigger': CustomSoap_Data['busyTrigger'],
                     },
                 }
+        else:
+            infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+            return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
 
+        infoLogger.debug('CustomSoap_Data: %s' % (CustomSoap_Data))
         try:
             # Damos de alta el telefono y no verificamos si existe el mismo telefono
             CustomUser_Resp = CustomService.addPhone(CustomSoap_Data)

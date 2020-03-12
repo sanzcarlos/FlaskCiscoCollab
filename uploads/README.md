@@ -10,17 +10,23 @@ Los campo que podemos utilizar, porque son los que estan implementado en la func
  * FirstName
  * Surname
  * userPrincipalName
+ * digestUser
  * pattern
  * routePartitionName
  * shareLineAppearanceCssName
  * callForwardAll
  * callingSearchSpaceName
+ * IPPhone
+ * name
+ * devicePoolName
+ * commonPhoneConfigName
+ * locationName
 
 El formato que tenemos que utilizar para dar de alta Translation Pattern es:
 
 ```
-FirstName,Surname,userPrincipalName,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName
-Carlos,Sanz,carlos.sanz,12205,Interna,4_Internacional,,1_Interna
+FirstName,Surname,userPrincipalName,digestUser,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName,IPPhone,name,devicePoolName,commonPhoneConfigName,locationName
+Carlos,Sanz,carlos.sanz,,12204,Interna,4_Internacional,,1_Interna,8845,SEPAABBCCDDEEFF,Madrid,Axians_Common_Phone_Profile,Madrid
 ```
 ### TransPattern
 Con esta función vamos a poder dar de alta un Translation Pattern.
