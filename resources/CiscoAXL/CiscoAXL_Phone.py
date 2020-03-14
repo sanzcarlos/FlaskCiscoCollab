@@ -134,6 +134,9 @@ class CiscoAXL_Phone(Resource):
                 else:
                     CustomSoap_Data['digestUser'] = varFORM['digestUser']
         # Comprobamos si existe la Key subscribeCallingSearchSpaceName
+        if 'callingSearchSpaceName' in varFORM:
+            CustomSoap_Data['callingSearchSpaceName'] = varFORM['callingSearchSpaceName']
+        # Comprobamos si existe la Key subscribeCallingSearchSpaceName
         if 'subscribeCallingSearchSpaceName' in varFORM:
             CustomSoap_Data['subscribeCallingSearchSpaceName'] = varFORM['subscribeCallingSearchSpaceName']
         # Comprobamos si existe la Key maxNumCalls
@@ -146,50 +149,93 @@ class CiscoAXL_Phone(Resource):
             CustomSoap_Data['busyTrigger'] = varFORM['busyTrigger']
         else:
             CustomSoap_Data['busyTrigger'] = '1'
-        # Comprobamos si existe la Key e164Mask
-        if 'e164Mask' in varFORM:
-            CustomSoap_Data['e164Mask'] = varFORM['e164Mask']
        
         # Comprobamos si existe la Key lines
         if all (k in varFORM for k in ('lines', 'routePartitionName')):
             if 'ownerUserName' in varFORM:
-                CustomSoap_Data['lines'] = {
-                    'line':{
-                        'index': 1,
-                        'display': varFORM['description'],
-                        #'e164Mask': CustomSoap_Data['e164Mask'],
-                        'label': varFORM['lines'] + ' ' + varFORM['description'],
-                        'dirn': {
-                            'pattern': varFORM['lines'],
-                            'routePartitionName': varFORM['routePartitionName'],
-                        },
-                        'associatedEndusers': {
-                            'enduser':{
-                                'userId': varFORM['ownerUserName'],
+                if 'e164Mask' in varFORM:
+                    CustomSoap_Data['lines'] = {
+                        'line':{
+                            'index': 1,
+                            'display': varFORM['description'],
+                            'e164Mask': varFORM['e164Mask'],
+                            'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'dirn': {
+                                'pattern': varFORM['lines'],
+                                'routePartitionName': varFORM['routePartitionName'],
                             },
+                            'associatedEndusers': {
+                                'enduser':{
+                                    'userId': varFORM['ownerUserName'],
+                                },
+                            },
+                            'recordingFlag': 'Call Recording Disabled',
+                            'recordingMediaSource': 'Gateway Preferred',
+                            'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                            'busyTrigger': CustomSoap_Data['busyTrigger'],
                         },
-                        'maxNumCalls': CustomSoap_Data['maxNumCalls'],
-                        'busyTrigger': CustomSoap_Data['busyTrigger'],
-                    },
-                }
+                    }
+                else:
+                    CustomSoap_Data['lines'] = {
+                        'line':{
+                            'index': 1,
+                            'display': varFORM['description'],
+                            'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'dirn': {
+                                'pattern': varFORM['lines'],
+                                'routePartitionName': varFORM['routePartitionName'],
+                            },
+                            'associatedEndusers': {
+                                'enduser':{
+                                    'userId': varFORM['ownerUserName'],
+                                },
+                            },
+                            'recordingFlag': 'Call Recording Disabled',
+                            'recordingMediaSource': 'Gateway Preferred',
+                            'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                            'busyTrigger': CustomSoap_Data['busyTrigger'],
+                        },
+                    }
             else:
-                CustomSoap_Data['lines'] = {
-                    'line':{
-                        'index': 1,
-                        'display': varFORM['lines'] + ' ' + varFORM['description'],
-                        #'e164Mask': CustomSoap_Data['e164Mask'],
-                        'label': varFORM['lines'] + ' ' + varFORM['description'],
-                        'dirn': {
-                            'pattern': varFORM['lines'],
-                            'routePartitionName': varFORM['routePartitionName'],
+                if 'e164Mask' in varFORM:
+                    CustomSoap_Data['lines'] = {
+                        'line':{
+                            'index': 1,
+                            'display': varFORM['description'],
+                            'e164Mask': varFORM['e164Mask'],
+                            'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'dirn': {
+                                'pattern': varFORM['lines'],
+                                'routePartitionName': varFORM['routePartitionName'],
+                            },
+                            'recordingFlag': 'Call Recording Disabled',
+                            'recordingMediaSource': 'Gateway Preferred',
+                            'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                            'busyTrigger': CustomSoap_Data['busyTrigger'],
                         },
-                        'maxNumCalls': CustomSoap_Data['maxNumCalls'],
-                        'busyTrigger': CustomSoap_Data['busyTrigger'],
-                    },
-                }
+                    }
+                else:
+                    CustomSoap_Data['lines'] = {
+                        'line':{
+                            'index': 1,
+                            'display': varFORM['description'],
+                            'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'dirn': {
+                                'pattern': varFORM['lines'],
+                                'routePartitionName': varFORM['routePartitionName'],
+                            },
+                            'recordingFlag': 'Call Recording Disabled',
+                            'recordingMediaSource': 'Gateway Preferred',
+                            'maxNumCalls': CustomSoap_Data['maxNumCalls'],
+                            'busyTrigger': CustomSoap_Data['busyTrigger'],
+                        },
+                    }
         else:
             infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
             return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
+        # Comprobamos si existe la Key e164Mask
+        if 'e164Mask' in varFORM:
+            CustomSoap_Data['e164Mask'] = varFORM['e164Mask']
 
         infoLogger.debug('CustomSoap_Data: %s' % (CustomSoap_Data))
         try:
@@ -199,10 +245,10 @@ class CiscoAXL_Phone(Resource):
             infoLogger.error('Se ha producido un error en la consulta SOAP')
             infoLogger.debug(sys.exc_info())
             infoLogger.error(sys.exc_info()[1])
-            return jsonify({'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'name':varFORM['name'], 'product': varFORM['product']})
+            return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'name':varFORM['name'], 'product': varFORM['product']},400
         else:
             infoLogger.info('Se ha configurado el telefono %s' % (varFORM['name']))
-            return jsonify({'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'name':varFORM['name'], 'product': varFORM['product']})
+            return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'name':varFORM['name'], 'product': varFORM['product']},201
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio

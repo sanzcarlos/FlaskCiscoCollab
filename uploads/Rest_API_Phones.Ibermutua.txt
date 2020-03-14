@@ -1,2 +1,2 @@
 FirstName,Surname,userPrincipalName,digestUser,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName,IPPhone,name,e164Mask,devicePoolName,commonPhoneConfigName,locationName,phoneTemplateName
-Carlos,Sanz,carlos.sanz,,12205,Interna,4_Internacional,,1_Interna,CSF,CSF12205,913236708,Madrid,Axians_Common_Phone_Profile,Madrid,Standard Client Services Framework
+Patrick,Cavaliere Pereira,PCavaliereP,PCavaliereP,337005,PINT0,CSS_T30,337000,CSS_Generico_00,CSF,CSFPCAVALIEREP,984751523,DP_33ALESON_9055,Ibermutua Jabber Phone Profile,L_Unlimited,Standard Client Services Framework

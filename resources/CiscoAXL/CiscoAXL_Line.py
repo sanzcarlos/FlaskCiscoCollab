@@ -176,7 +176,7 @@ class CiscoAXL_Line(Resource):
             return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
             infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
-            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']}
+            return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},201
 
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio

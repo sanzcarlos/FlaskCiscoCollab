@@ -53,5 +53,11 @@ def index():
 # *
 # *------------------------------------------------------------------
 
+# *------------------------------------------------------------------
+# * Rest API - Cisco AXL - Status Codes
+# *
+# * - https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+# *------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8443, debug=True, ssl_context=context)

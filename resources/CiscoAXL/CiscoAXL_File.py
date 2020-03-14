@@ -97,13 +97,15 @@ class CiscoAXL_File(Resource):
                     url = 'https://127.0.0.1:8443/api/v1/CUCM/Line'
                     if 'FirstName' in row:
                         if 'Surname' in row:
-                            payload = payload + '&description=' + row['pattern'] + ' - ' + row['FirstName'] + ' ' + row['Surname'] + '&alertingName=' + row['pattern'] + ' - ' + row['FirstName'] + ' ' + row['Surname']
+                            payload = payload + '&description=' + row['FirstName'] + ' ' + row['Surname'] + '&alertingName=' + row['FirstName'] + ' ' + row['Surname']
                     if 'routePartitionName' in row:
                         payload = payload + '&routePartitionName=' + row['routePartitionName']
                     if 'shareLineAppearanceCssName' in row:
                         payload = payload + '&shareLineAppearanceCssName=' + row['shareLineAppearanceCssName']
                     if 'pattern' in row:
                         payload = payload + '&pattern=' + row['pattern']
+                    if 'e164Mask' in row:
+                        payload = payload + '&e164Mask=' + row['e164Mask']
                     if 'callForwardAll' in row:
                         if 'callingSearchSpaceName' in row:
                             payload = payload + '&callForwardAll=' + row['callForwardAll'] + '&callingSearchSpaceName=' + row['callingSearchSpaceName']
@@ -141,7 +143,7 @@ class CiscoAXL_File(Resource):
                             infoLogger.debug('payload: %s' % (payload))
                         # Definición de maxNumCalls y busyTrigger
                         if row['IPPhone'][0:2] == '39' or \
-                            row['IPPhone'][0:2] == 'ATA':
+                            row['IPPhone'][0:3] == 'ATA':
                             row['maxNumCalls']='2'
                             row['busyTrigger']='1'
                         else:

@@ -58,6 +58,8 @@ class CiscoAXL_User(Resource):
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
 
+        CustomSoap_Data = {}
+
         # Comprobamos si existe la Key userid
         if 'userid' in varFORM:
             CustomSoap_Data['userid'] = varFORM['userid']
@@ -118,7 +120,7 @@ class CiscoAXL_User(Resource):
             return {'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['userid']},400
         else:
             infoLogger.info('Se ha configurado el User ID %s' % (varFORM['userid']))
-            return jsonify({'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'userid':varFORM['userid']})
+            return jsonify({'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'userid':varFORM['userid']}),201
 
     def delete(self):
         infoLogger = logging.getLogger('FlaskCiscoCollab')
@@ -128,6 +130,8 @@ class CiscoAXL_User(Resource):
 
         CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
         CustomService = CustomService.CustomSoapClient ()
+
+        CustomSoap_Data = {}
 
         # Comprobamos si existe la Key userid
         if 'userid' in varFORM:
@@ -153,7 +157,46 @@ class CiscoAXL_User(Resource):
         # * Funcion para actualizar un User
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion put de la clase CiscoAXL_userid' )
-        return {'Class': 'userid','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+        varFORM = request.form
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+
+        CustomService = CustomSoap.ClientSoap (infoLogger,varFORM['mmpHost'],varFORM['mmpUser'],varFORM['mmpPass'],varFORM['mmpVersion'])
+        CustomService = CustomService.CustomSoapClient ()
+
+        CustomSoap_Data = {}
+
+        # Comprobamos si existe la Key associatedDevices
+        if 'userid' in varFORM:
+            CustomSoap_Data = {
+                'userid': varFORM['userid'],
+              }
+        else:
+            return {'Class': 'userid','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta el campo userid'},400
+
+        try:
+            CustomUser_Resp = CustomService.getUser(**CustomSoap_Data)
+        except:
+            infoLogger.error('Se ha producido un error en la consulta SOAP')
+            infoLogger.debug(sys.exc_info())
+            infoLogger.error(sys.exc_info()[1])
+            return {'Class': 'userid','AXL': 'get','Method': 'GET', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['userid']},400
+        else:
+            # Comprobamos si existe la Key associatedDevices
+            if 'associatedDevices' in varFORM:
+                CustomSoap_Data['associatedDevices'] = CustomUser_Resp['return']['user']['associatedDevices']
+                CustomSoap_Data['associatedDevices']['device'].append(varFORM['associatedDevices'])
+            else:
+                return {'Class': 'userid','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+            try:
+                CustomUser_Resp = CustomService.updateUser(**CustomSoap_Data)
+            except:
+                infoLogger.error('Se ha producido un error en la consulta SOAP')
+                infoLogger.debug(sys.exc_info())
+                infoLogger.error(sys.exc_info()[1])
+                return {'Class': 'User','AXL': 'update','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['userid']}
+            else:
+                infoLogger.info('Se ha actualizado el usuario %s' % (varFORM['userid']))
+                return {'Class': 'User','AXL': 'update','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'userid':varFORM['userid']},201
 
     def patch(self):
         # * Funcion para actualizar un User
