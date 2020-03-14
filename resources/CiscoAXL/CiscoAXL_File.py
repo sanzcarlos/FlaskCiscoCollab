@@ -120,7 +120,6 @@ class CiscoAXL_File(Resource):
 
                     # Damos de alta el Telefono
                     url = 'https://127.0.0.1:8443/api/v1/CUCM/Phone'
-                    infoLogger.debug('IPPhone: %s' % (row['IPPhone'][0:3]))
                     if 'IPPhone' in row:
                         if row['IPPhone'][0:2] == '39' or \
                             row['IPPhone'][0:2] == '78' or \
@@ -169,6 +168,19 @@ class CiscoAXL_File(Resource):
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
                     result['Phone' + str(i)] = json.loads(response.text.encode('utf8'))
+
+                    # Actualizamos el usuario
+                    url = 'https://127.0.0.1:8443/api/v1/CUCM/User'
+
+                    if 'userPrincipalName' in row:
+                        payload = payload + '&associatedDevices=' + row['name']
+                    else:
+                        infoLogger.error('No estan todas los parametros requeridos: %s' % (row))
+                        return {'Class': 'User','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'Falta alguno el parametros: userPrincipalName'},400
+                    infoLogger.debug('payload: %s' % (payload))
+                    response = requests.request('PUT', url, verify=False, headers=headers, data = payload)
+                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                    result['User' + str(i)] = json.loads(response.text.encode('utf8'))
 
                     i = i + 1
                 return (json.loads(json.dumps(result)))
