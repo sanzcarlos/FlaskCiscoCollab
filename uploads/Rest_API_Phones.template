@@ -1,2 +1,0 @@
-FirstName,Surname,userPrincipalName,digestUser,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName,IPPhone,name,e164Mask,devicePoolName,commonPhoneConfigName,locationName,phoneTemplateName
-Carlos,Sanz,carlos.sanz,,12205,Interna,4_Internacional,,1_Interna,CSF,CSF12205,913236708,Madrid,Axians_Common_Phone_Profile,Madrid,Standard Client Services Framework
