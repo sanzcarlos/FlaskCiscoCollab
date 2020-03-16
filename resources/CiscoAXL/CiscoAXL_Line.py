@@ -86,7 +86,7 @@ class CiscoAXL_Line(Resource):
         varFORM = request.form
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
         if all (k in varFORM for k in ('pattern', 'routePartitionName')):
-            infoLogger.debug('Se quiere dar de alta el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            infoLogger.info('Se quiere dar de alta el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
             CustomSoap_Data = {
                     'pattern': varFORM['pattern'],
                     'routePartitionName': varFORM['routePartitionName']
@@ -175,7 +175,7 @@ class CiscoAXL_Line(Resource):
             infoLogger.error(sys.exc_info()[1])
             return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},400
         else:
-            infoLogger.info('Se ha configurado el Translation Pattern %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
+            infoLogger.info('Se ha configurado el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
             return {'Class': 'line','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']},201
 
     def patch(self):
