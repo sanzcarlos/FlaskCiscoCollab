@@ -183,10 +183,22 @@ class CiscoAXL_User(Resource):
         else:
             # Comprobamos si existe la Key associatedDevices
             if 'associatedDevices' in varFORM:
-                CustomSoap_Data['associatedDevices'] = CustomUser_Resp['return']['user']['associatedDevices']
-                CustomSoap_Data['associatedDevices']['device'].append(varFORM['associatedDevices'])
+                if CustomUser_Resp['return']['user']['associatedDevices'] == None:
+                    CustomSoap_Data['associatedDevices'] = {'device': varFORM['associatedDevices']}
+                    infoLogger.debug('CustomSoap_Data: %s' % (CustomSoap_Data))
+                else:
+                    CustomSoap_Data['associatedDevices'] = CustomUser_Resp['return']['user']['associatedDevices']
+                    CustomSoap_Data['associatedDevices']['device'].append(varFORM['associatedDevices'][0:15])
+                    infoLogger.debug('CustomSoap_Data: %s' % (CustomSoap_Data))
             else:
                 return {'Class': 'userid','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'No esta definida la funcion'},400
+
+            # Comprobamos si existe la Key pattern y routePartitionName
+            if all (k in varFORM for k in ('pattern', 'routePartitionName')):
+                    CustomSoap_Data['primaryExtension'] = {
+                        'pattern': varFORM['pattern'],
+                        'routePartitionName': varFORM['routePartitionName'],
+                    }
             try:
                 CustomUser_Resp = CustomService.updateUser(**CustomSoap_Data)
             except:

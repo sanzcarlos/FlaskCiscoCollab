@@ -154,7 +154,7 @@ class CiscoAXL_File(Resource):
 
                     # Comprobamos si existe la Key userPrincipalName
                     if 'userPrincipalName' in row:
-                        payload = payload + '&ownerUserName=' + row['userPrincipalName']
+                        payload = payload + '&ownerUserName=' + row['userPrincipalName']+ '&userid=' + row['userPrincipalName']
                     if 'digestUser' in row:
                         payload = payload + '&digestUser=' + row['digestUser']
                             

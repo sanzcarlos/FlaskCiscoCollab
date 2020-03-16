@@ -110,7 +110,7 @@ class CiscoAXL_Phone(Resource):
         # Comprobamos si existe las siguientes Key's name, product, class, protocol, protocolSide, devicePoolName, commonPhoneConfigName, locationName, useTrustedRelayPoint and phoneTemplateName
         if all (k in varFORM for k in ('name', 'product', 'protocol', 'devicePoolName', 'commonPhoneConfigName', 'locationName', 'phoneTemplateName')):
             infoLogger.debug('Se quiere dar de alta un telefono con el nombre %s modelo %s' % (varFORM['name'],varFORM['product']))
-            CustomSoap_Data['name'] = varFORM['name']
+            CustomSoap_Data['name'] = varFORM['name'][0:15]
             CustomSoap_Data['product'] = varFORM['product']
             CustomSoap_Data['protocol'] = varFORM['protocol']
             CustomSoap_Data['devicePoolName'] = varFORM['devicePoolName']
