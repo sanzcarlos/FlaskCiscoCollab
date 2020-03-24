@@ -220,4 +220,3 @@ class CiscoAXL_Line(Resource):
         else:
             infoLogger.info('Se ha borrado el Directory Number %s en la Particion %s' % (varFORM['pattern'],varFORM['routePartitionName']))
             return {'Class': 'line','AXL': 'remove','Method': 'DELETE', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'pattern':varFORM['pattern'],'routePartitionName':varFORM['routePartitionName']}
-
