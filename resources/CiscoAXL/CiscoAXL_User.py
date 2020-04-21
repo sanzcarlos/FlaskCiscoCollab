@@ -109,6 +109,15 @@ class CiscoAXL_User(Resource):
             CustomSoap_Data['presenceGroupName'] = varFORM['presenceGroupName']
         else:
             CustomSoap_Data['presenceGroupName'] = 'Standard Presence group'
+        if 'password' in varFORM:
+            CustomSoap_Data['password'] = varFORM['password']
+        if 'digestCredentials' in varFORM:
+            CustomSoap_Data['digestCredentials'] = varFORM['digestCredentials']
+        if 'telephoneNumber' in varFORM:
+            CustomSoap_Data['telephoneNumber'] = varFORM['telephoneNumber']
+            CustomSoap_Data['selfService'] = varFORM['telephoneNumber']
+            CustomSoap_Data['enableUserToHostConferenceNow'] = 'true'
+            CustomSoap_Data['attendeesAccessCode'] = varFORM['telephoneNumber']
 
         try:
             # Damos de alta el User ID y no verificamos si existe el mismo User ID
@@ -119,7 +128,6 @@ class CiscoAXL_User(Resource):
             infoLogger.error(sys.exc_info()[1])
             return {'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['userid']},400
         else:
-            infoLogger.debug('CustomUser_Resp %s' % (CustomUser_Resp))
             infoLogger.info('Se ha configurado el User ID %s' % (varFORM['userid']))
             return {'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'userid':varFORM['userid']},201
 

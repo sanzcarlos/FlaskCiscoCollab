@@ -102,6 +102,8 @@ class CiscoAXL_File(Resource):
                         payload = payload + '&routePartitionName=' + row['routePartitionName']
                     if 'shareLineAppearanceCssName' in row:
                         payload = payload + '&shareLineAppearanceCssName=' + row['shareLineAppearanceCssName']
+                    if 'callPickupGroupName' in row:
+                        payload = payload + '&callPickupGroupName=' + row['callPickupGroupName']
                     if 'pattern' in row:
                         payload = payload + '&pattern=' + row['pattern']
                     if 'e164Mask' in row:
