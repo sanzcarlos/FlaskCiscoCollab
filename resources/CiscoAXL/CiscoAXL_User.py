@@ -119,8 +119,9 @@ class CiscoAXL_User(Resource):
             infoLogger.error(sys.exc_info()[1])
             return {'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': str(sys.exc_info()[1]),'userid':varFORM['userid']},400
         else:
+            infoLogger.debug('CustomUser_Resp %s' % (CustomUser_Resp))
             infoLogger.info('Se ha configurado el User ID %s' % (varFORM['userid']))
-            return jsonify({'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': str(CustomUser_Resp['return']),'userid':varFORM['userid']}),201
+            return {'Class': 'userid','AXL': 'add','Method': 'POST', 'Status': 'OK', 'Detail': CustomUser_Resp['return'],'userid':varFORM['userid']},201
 
     def delete(self):
         infoLogger = logging.getLogger('FlaskCiscoCollab')

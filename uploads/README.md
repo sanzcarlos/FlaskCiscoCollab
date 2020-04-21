@@ -30,6 +30,19 @@ El formato que tenemos que utilizar para dar de alta Translation Pattern es:
 FirstName,Surname,userPrincipalName,digestUser,pattern,routePartitionName,shareLineAppearanceCssName,callForwardAll,callingSearchSpaceName,IPPhone,name,e164Mask,devicePoolName,commonPhoneConfigName,locationName,phoneTemplateName
 Carlos,Sanz,carlos.sanz,,12205,Interna,4_Internacional,,1_Interna,CSF,CSF12205,913236708,Madrid,Axians_Common_Phone_Profile,Madrid,Standard Client Services Framework
 ```
+### User
+Los campo que podemos utilizar, porque son los que estan implementado en la funciona CiscoAXL_Line y CiscoAXL_Phone son:
+
+ * userid
+ * lastName
+ * password
+ * telephoneNumber
+
+```
+userid,lastName,password,telephoneNumber
+2000,Pruebas CSP,2000,2000
+```
+
 ### TransPattern
 Con esta función vamos a poder dar de alta un Translation Pattern.
 

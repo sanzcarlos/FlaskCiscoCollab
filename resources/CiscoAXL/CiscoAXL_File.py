@@ -185,7 +185,7 @@ class CiscoAXL_File(Resource):
                     i = i + 1
                 return (json.loads(json.dumps(result)))
 
-            if varFORM['action']  == 'TransPattern':
+            elif varFORM['action']  == 'TransPattern':
                 # * Damos de alta los Translation Pattern
                 varFileReader = csv.DictReader(varCSVFile)
                 # Variables comunes a todas las peticiones:
@@ -212,6 +212,32 @@ class CiscoAXL_File(Resource):
                     if 'provideOutsideDialtone' in row:
                         payload = payload + '&provideOutsideDialtone=' + row['provideOutsideDialtone']
                     response = requests.request('POST', url, verify=False, headers=headers, data = payload)
+                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                    result[i] = json.loads(response.text.encode('utf8'))
+                    i = i + 1
+                return (json.loads(json.dumps(result)))
+            elif varFORM['action']  == 'Users':
+                # * Damos de alta los Endusers
+                varFileReader = csv.DictReader(varCSVFile)
+                # Variables comunes a todas las peticiones:
+                url = 'https://127.0.0.1:8443/api/v1/CUCM/User'
+                headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+                # Comenzamos el Bucle para dar de alta los Users
+                result = {}
+                i = 1
+                for row in varFileReader:
+                    payload = 'mmpHost=' + varFORM['mmpHost'] + '&mmpPort=' + varFORM['mmpPort'] + '&mmpUser=' + varFORM['mmpUser'] + '&mmpPass=' + varFORM['mmpPass'].replace('%','%25') + '&mmpVersion=' + varFORM['mmpVersion']
+                    if 'userid' in row:
+                        payload = payload + '&userid=' + row['userid']
+                    if 'lastName' in row:
+                        payload = payload + '&lastName=' + row['lastName']
+                    if 'password' in row:
+                        payload = payload + '&password=' + row['password'] + '&digestCredentials=' + row['password'] + '&pin=123456'
+                    if 'telephoneNumber' in row:
+                        payload = payload + '&telephoneNumber=' + row['telephoneNumber']
+                    response = requests.request('POST', url, verify=False, headers=headers, data = payload)
+                    print (response)
                     infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
                     result[i] = json.loads(response.text.encode('utf8'))
                     i = i + 1
