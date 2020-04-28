@@ -16,7 +16,7 @@ def rotator(source, dest):
 def getCustomLogger(name, filename, setlevel='INFO'):
     directory = os.path.dirname(os.path.abspath(__file__))
     logger = logging.getLogger(name)
-    if setlevel is 'DEBUG':
+    if setlevel == 'DEBUG':
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)

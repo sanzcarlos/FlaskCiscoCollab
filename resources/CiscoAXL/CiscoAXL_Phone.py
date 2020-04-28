@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # *------------------------------------------------------------------
 # * cspaxl_Phone.py
@@ -123,7 +123,10 @@ class CiscoAXL_Phone(Resource):
         
         # Comprobamos si existe la Key description
         if 'description' in varFORM:
-            CustomSoap_Data['description'] = varFORM['description']           
+            CustomSoap_Data['description'] = varFORM['lines'] + ' - ' + varFORM['description'][0:40]
+        # Comprobamos si existe la Key description
+        if 'commonDeviceConfigName' in varFORM:
+            CustomSoap_Data['commonDeviceConfigName'] = varFORM['commonDeviceConfigName']           
         # Comprobamos si existe la Key ownerUserName
         if 'ownerUserName' in varFORM:
             CustomSoap_Data['ownerUserName'] = varFORM['ownerUserName']
@@ -157,9 +160,9 @@ class CiscoAXL_Phone(Resource):
                     CustomSoap_Data['lines'] = {
                         'line':{
                             'index': 1,
-                            'display': varFORM['description'],
-                            'e164Mask': varFORM['e164Mask'],
+                            'display': varFORM['description'][0:50],
                             'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'e164Mask': varFORM['e164Mask'],
                             'dirn': {
                                 'pattern': varFORM['lines'],
                                 'routePartitionName': varFORM['routePartitionName'],
@@ -179,7 +182,7 @@ class CiscoAXL_Phone(Resource):
                     CustomSoap_Data['lines'] = {
                         'line':{
                             'index': 1,
-                            'display': varFORM['description'],
+                            'display': varFORM['description'][0:50],
                             'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
                             'dirn': {
                                 'pattern': varFORM['lines'],
@@ -201,9 +204,9 @@ class CiscoAXL_Phone(Resource):
                     CustomSoap_Data['lines'] = {
                         'line':{
                             'index': 1,
-                            'display': varFORM['description'],
-                            'e164Mask': varFORM['e164Mask'],
+                            'display': varFORM['description'][0:50],
                             'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
+                            'e164Mask': varFORM['e164Mask'],
                             'dirn': {
                                 'pattern': varFORM['lines'],
                                 'routePartitionName': varFORM['routePartitionName'],
@@ -218,7 +221,7 @@ class CiscoAXL_Phone(Resource):
                     CustomSoap_Data['lines'] = {
                         'line':{
                             'index': 1,
-                            'display': varFORM['description'],
+                            'display': varFORM['description'][0:50],
                             'label': varFORM['lines'] + ' - ' + varFORM['description'][0:20],
                             'dirn': {
                                 'pattern': varFORM['lines'],

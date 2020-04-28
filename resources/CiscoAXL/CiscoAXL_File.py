@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # *------------------------------------------------------------------
 # * cspaxl_File.py
@@ -74,7 +74,8 @@ class CiscoAXL_File(Resource):
         infoLogger.debug('El fichero que vamos a cargar es: %s' % (varFilename))
 
         try:
-            varCSVFile = open(varFilename, 'r', encoding='utf-8')
+            #varCSVFile = open(varFilename, 'r', encoding='utf-8')
+            varCSVFile = open(varFilename, 'r')
         except:
             infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
             infoLogger.debug(sys.exc_info())
@@ -104,6 +105,8 @@ class CiscoAXL_File(Resource):
                         payload = payload + '&shareLineAppearanceCssName=' + row['shareLineAppearanceCssName']
                     if 'callPickupGroupName' in row:
                         payload = payload + '&callPickupGroupName=' + row['callPickupGroupName']
+                    if 'commonDeviceConfigName' in row:
+                        payload = payload + '&commonDeviceConfigName=' + row['commonDeviceConfigName']
                     if 'pattern' in row:
                         payload = payload + '&pattern=' + row['pattern']
                     if 'e164Mask' in row:
@@ -129,7 +132,6 @@ class CiscoAXL_File(Resource):
                             row['IPPhone'][0:2] == '99' or \
                             row['IPPhone'][0:7] == 'ATA 190':
                             payload = payload + '&protocol=SIP&product=Cisco ' + row['IPPhone']
-                            infoLogger.debug('payload: %s' % (payload))
                         # Definición Cisco Unified Client Services Framework
                         elif row['IPPhone'][0:3] == 'CSF':
                             payload = payload + '&protocol=SIP&product=Cisco Unified Client Services Framework'                        
@@ -147,9 +149,12 @@ class CiscoAXL_File(Resource):
                             row['IPPhone'][0:3] == 'ATA':
                             row['maxNumCalls']='2'
                             row['busyTrigger']='1'
+                            infoLogger.info('maxNumCalls: %s y busyTrigger: %s' % (row['maxNumCalls'],row['busyTrigger']))
                         else:
                             row['maxNumCalls']='4'
                             row['busyTrigger']='2'
+                            infoLogger.info('maxNumCalls: %s y busyTrigger: %s' % (row['maxNumCalls'],row['busyTrigger']))
+                        payload = payload + '&maxNumCalls=' + row['maxNumCalls'] + '&busyTrigger=' + row['busyTrigger']
                     else:
                         infoLogger.error('No esta el campo IPPhone: %s' % (row))
                         return {'Class': 'Phone','AXL': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan el parametro IPPhone'},400
@@ -176,14 +181,13 @@ class CiscoAXL_File(Resource):
 
                     if 'userPrincipalName' in row:
                         payload = payload + '&associatedDevices=' + row['name']
+                        infoLogger.debug('payload: %s' % (payload))
+                        response = requests.request('PUT', url, verify=False, headers=headers, data = payload)
+                        infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
+                        result['User' + str(i)] = json.loads(response.text.encode('utf8'))
                     else:
-                        infoLogger.error('No estan todas los parametros requeridos: %s' % (row))
-                        return {'Class': 'User','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'Falta alguno el parametros: userPrincipalName'},400
-                    infoLogger.debug('payload: %s' % (payload))
-                    response = requests.request('PUT', url, verify=False, headers=headers, data = payload)
-                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
-                    result['User' + str(i)] = json.loads(response.text.encode('utf8'))
-
+                        infoLogger.warning('No estan todas los parametros requeridos: %s' % (row))
+                        result['User' + str(i)] = {'Class': 'User','AXL': 'update','Method': 'PUT', 'Status': 'ERROR', 'Detail': 'Falta alguno el parametros: userPrincipalName'}
                     i = i + 1
                 return (json.loads(json.dumps(result)))
 
