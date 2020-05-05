@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, request, jsonify
 from flask_restful import Resource, Api
 from lxml import etree
@@ -20,8 +18,8 @@ db_connect = create_engine('sqlite:///' + os.path.abspath(os.getcwd()) + '/datab
 app = Flask(__name__) # pylint: disable=invalid-name
 api = Api (app)
 
-#infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab','DEBUG')
-infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab')
+infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab','DEBUG')
+#infoLogger = CustomLogger.getCustomLogger('FlaskCiscoCollab', 'FlaskCiscoCollab')
 
 # Rest API para Cisco Unified Communications Manager
 api.add_resource(CiscoAXL_Change.CiscoAXL_Change, '/api/v1/CUCM/Change')
