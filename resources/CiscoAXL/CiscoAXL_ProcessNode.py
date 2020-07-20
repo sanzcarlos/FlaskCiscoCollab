@@ -85,7 +85,7 @@ class CiscoAXL_ProcessNode(Resource):
     def patch(self):
         # * Funcion para buscar todos los elementos que coincidan con el criterio listProcessNode
         infoLogger = logging.getLogger('FlaskCiscoCollab')
-        infoLogger.debug('Ha accedido a la funcion post de la clase CiscoAXL_ProcessNode' )
+        infoLogger.debug('Ha accedido a la funcion PATCH de la clase CiscoAXL_ProcessNode' )
         infoLogger.debug('Esta utilizando el metodo PATCH' )
         varFORM = request.form
         infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
