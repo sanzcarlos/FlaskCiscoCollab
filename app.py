@@ -38,6 +38,12 @@ api.add_resource(CiscoAXL_File.CiscoAXL_File, '/api/v1/CUCM/File')
 # Rest API para Cisco Meeting Server
 api.add_resource(CiscoCMS_File.CiscoCMS_File, '/api/v1/CMS/File')
 
+# Rest API para Cisco Expressway
+#api.add_resource(CiscoCMS_File.CiscoCMS_File, '/api/v1/EXP/File')
+
+# Rest API para Cisco Unified Contact Center Express
+api.add_resource(CiscoUCCX_resourceGroup.CiscoUCCX_resourceGroup, '/api/v1/UCCX/resourceGroup')
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
