@@ -7,6 +7,7 @@ from prettytable import PrettyTable
 
 from resources.CiscoAXL import *
 from resources.CiscoCMS import *
+from resources.CiscoUCCX import *
 
 import os
 import sys

@@ -23,6 +23,7 @@ Los campo que podemos utilizar, porque son los que estan implementado en la func
  * commonPhoneConfigName
  * locationName
  * phoneTemplateName
+ * commonDeviceConfigName
 
 El formato que tenemos que utilizar para dar de alta Translation Pattern es:
 
@@ -36,11 +37,12 @@ Los campo que podemos utilizar, porque son los que estan implementado en la func
  * userid
  * lastName
  * password
+ * pin
  * telephoneNumber
 
 ```
-userid,lastName,password,telephoneNumber
-2000,Pruebas CSP,2000,2000
+userid,lastName,password,pin,telephoneNumber
+2000,Pruebas CSP,2000,123456,2000
 ```
 
 ### TransPattern

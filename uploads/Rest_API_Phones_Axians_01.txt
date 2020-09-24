@@ -1,6 +1,0 @@
-FirstName,Surname,pattern,routePartitionName,shareLineAppearanceCssName,callingSearchSpaceName,IPPhone,name,e164Mask,devicePoolName,commonPhoneConfigName,locationName,phoneTemplateName
-Operador,1,19601,Interna,4_Internacional,1_Interna,7911,SEP001AA27AE0DA,913236754,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7911
-Operador,2,19602,Interna,4_Internacional,1_Interna,7911,SEP64D989699D1E,913236756,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7911
-Operador,3,19603,Interna,4_Internacional,1_Interna,7911,SEP0024C444B711,913236757,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7911
-Operador,4,19604,Interna,4_Internacional,1_Interna,7911,SEP000830307069,913236758,Madrid,Axians_Common_Phone_Profile,Madrid,Standard 7911
-

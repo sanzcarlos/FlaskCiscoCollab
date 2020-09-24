@@ -51,60 +51,35 @@ import logging
 
 class CiscoUCCX_resourceGroup(Resource):
     def post(self):
-        # * Funcion para crear un elemento
+        # * Funcion para crear un Resource Group
         infoLogger = logging.getLogger('FlaskCiscoCollab')
         infoLogger.debug('Ha accedido a la funcion post de la clase CiscoUCCX_resourceGroup' )
         infoLogger.debug('Esta utilizando el metodo POST' )
 
-        if 'File' not in request.files:
-            # * La peticion de REST API no tiene un elemento File
-            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: No file attribute'})
-        elif request.files['File'].filename == '':
-            # * La peticion de REST API no tiene adjunto un fichero.
-            return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: No selected file'})
-
         varFORM = request.form
-        varFORMFile = request.files['File']
+        infoLogger.debug('La direccion IP es: %s' % (varFORM))
+        #varFORM['mmpHost'] = '10.90.86.7'
 
-        # * Subimos el fichero a nuestro Servidor REST API
-        varDIR = 'uploads'
-        varFORMFile.save(os.path.join(varDIR,varFORMFile.filename))
-        varFilename = varDIR + '/' + varFORMFile.filename
-        infoLogger.debug('El fichero que vamos a cargar es: %s' % (varFilename))
+        infoLogger.debug('La direccion IP es: %s' % (varFORM['mmpHost']))
+        #if all (k in varFORM for k in ('name')):
+        #    infoLogger.info('Se quiere dar de alta el Resource Group %s' % (varFORM['name']))
+        #else:
+        #    infoLogger.error('No estan todas los parametros requeridos: %s' % (varFORM))
+        #    return {'Class': 'CiscoUCCX','UCCX': 'add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Faltan parametros'},400
 
-        try:
-            varCSVFile = open(varFilename, 'r', encoding='utf-8')
-        except:
-            infoLogger.error('Se ha producido un error al abrir el archivo %s' % (varFilename))
-            infoLogger.debug(sys.exc_info())
-            infoLogger.error(sys.exc_info()[1])
-            return {'Class': 'useCiscoCMS_Filerid','CMS': 'Add','Method': 'POST', 'Status': 'ERROR', 'Detail': 'Can not open the file'},400
+        # Variables comunes a todas las peticiones:
+        #url = 'https://' + varFORM['mmpHost'] + ':' + varFORM['mmpPort'] + '/api/v1/UCCX/resourceGroup'
+        url = 'https://10.90.86.7:' + varFORM['mmpPort'] + '/api/v1/UCCX/resourceGroup'
+        headers = {'Content-Type': 'text/xml'}
+
+        # Fichero XML
+        xml = """<?xml version="1.0" encoding="UTF-8"?><ResourceGroup><self/><name>' + varFORM['name'] + '</name></ResourceGroup>"""
+        infoLogger.debug('XML es %s' % (xml))
+
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += 'HIGH:!DH:!aNULL'
+        response = requests.post(url, verify=False, headers=headers,data=xml)
+        infoLogger.debug('El Response Code es %s' % (response.status_code))
+        if response.status_code == 201:
+            return {'Class': 'CiscoUCCX','UCCX': 'Add','Method': 'POST', 'Status': 'OK'},response.status_code
         else:
-            infoLogger.info('Se ha abierto el archivo %s' % (varFilename))
-            if varFORM['action']  == 'coSpaces':
-                # * Damos de alta los coSpace directamente en el CMS
-                varFileReader = csv.DictReader(varCSVFile)
-                # Variables comunes a todas las peticiones:
-                url = 'https://' + varFORM['mmpHost'] + ':' + varFORM['mmpPort'] + '/api/v1/CUCM/' + varFORM['action']
-                headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-
-                # Comenzamos el Bucle para dar de alta los coSpaces
-                result = {}
-                i = 1
-                for row in varFileReader:
-                    payload = '&name=' + row['name'] + '&uri=' + row['uri'] + '&secondaryUri=' + row['secondaryUri'] + '&callId=' + row['callId'] + '&cdrTag=' + row['cdrTag'] + '&defaultlayout=' + row['defaultlayout'] + '&tenant=' + row['tenant'] + '&callProfile=' + row['callProfile'] + '&requireCallId=' + row['requireCallId']
-                    response = requests.request('POST', url, verify=False, headers=headers, data = payload)
-                    infoLogger.debug('Response: %s' % (json.loads(response.text.encode('utf8'))))
-                    result[i] = json.loads(response.text.encode('utf8'))
-                    i = i + 1
-                return (json.loads(json.dumps(result)))
-            else:
-                # * Valor no correcto 
-                return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'ERROR: First row is not valid'})
-
-        finally:
-            # * Cerramos el fichero
-            varCSVFile.close()
-            infoLogger.info('Se ha cerrado el archivo %s' % (varFilename))
-
-        return jsonify({'Class': 'CiscoCMS_File','CMS': 'Add','Method': 'POST', 'Status': 'Ok'})
+            return {'Class': 'CiscoUCCX','UCCX': 'Add','Method': 'POST', 'Status': 'ERROR'},response.status_code

@@ -109,6 +109,10 @@ class CiscoAXL_User(Resource):
             CustomSoap_Data['presenceGroupName'] = varFORM['presenceGroupName']
         else:
             CustomSoap_Data['presenceGroupName'] = 'Standard Presence group'
+        if 'pin' in varFORM:
+            CustomSoap_Data['pin'] = varFORM['pin']
+        else:
+            CustomSoap_Data['pin'] = '123456'
         if 'password' in varFORM:
             CustomSoap_Data['password'] = varFORM['password']
         if 'digestCredentials' in varFORM:
